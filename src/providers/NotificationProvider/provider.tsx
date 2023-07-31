@@ -10,6 +10,26 @@ export const NotificationProvider = ({ children }: PropsWithChildren) => {
   const [notifs, setNotifs] = useState<Notification[]>([]);
   const [alert, setAlert] = useState<Alert | null>(null);
 
+  const removeNotification = useCallback((id: string) => {
+    setNotifs(notifs.filter((notif) => notif.id !== id));
+  }, [notifs]);
+
+  const newAlert = useCallback((msg: string): Promise<boolean> => {
+    return new Promise((resolve) => {
+      const handleConfirm = () => {
+        setAlert(null);
+        resolve(true);
+      };
+
+      const handleCancel = () => {
+        setAlert(null);
+        resolve(false);
+      };
+
+      setAlert({ msg, onCancel: handleCancel, onConfirm: handleConfirm });
+    });
+  }, []);
+
   const addNotification = useCallback((notif: Notification) => {
     if (!notif.msg) {
       return;
@@ -29,27 +49,7 @@ export const NotificationProvider = ({ children }: PropsWithChildren) => {
       removeNotification(id);
       clearTimeout(timer);
     }, newNotif.timeout);
-  }, []);
-
-  const removeNotification = useCallback((id: string) => {
-    setNotifs(notifs.filter((notif) => notif.id !== id));
-  }, []);
-
-  const newAlert = useCallback((msg: string): Promise<boolean> => {
-    return new Promise((resolve) => {
-      const handleConfirm = () => {
-        setAlert(null);
-        resolve(true);
-      };
-
-      const handleCancel = () => {
-        setAlert(null);
-        resolve(false);
-      };
-
-      setAlert({ msg, onCancel: handleCancel, onConfirm: handleConfirm });
-    });
-  }, []);
+  }, [notifs, removeNotification]);
 
   const value: NotificationProviderContext = useMemo(
     () => ({

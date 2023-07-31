@@ -78,7 +78,7 @@ export const GalleryProvider = ({ children }: PropsWithChildren) => {
 
       addNotification({ msg: "File uploaded successfully", type: "success" });
     },
-    [isConnected, fs, getFilesFromWnfs],
+    [isConnected, fs, getFilesFromWnfs, addNotification],
   );
 
   const readFile = useCallback(

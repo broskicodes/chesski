@@ -67,7 +67,7 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
       await session.destroy();
       setSession(null);
     }
-  }, [program, session]);
+  }, [program, session, newAlert]);
 
   const value: SessionProviderContext = useMemo(
     () => ({

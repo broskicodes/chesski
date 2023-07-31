@@ -98,7 +98,7 @@ export const Board = () => {
 
       return true;
     },
-    [makeAMove],
+    [makeAMove, isLoading],
   );
 
   const swapOrientation = useCallback(() => {
