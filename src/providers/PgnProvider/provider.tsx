@@ -7,12 +7,13 @@ import {
   useMemo,
   useState,
 } from "react";
+import { parsedPgnToChessJs } from "../../utils/helpers";
 import { useGallery } from "../FileGalleryProvider";
 import { PgnContext, PgnProviderContext } from "./context";
 
 export const PgnProvider = ({ children }: PropsWithChildren) => {
   const { publicFiles, readFile } = useGallery();
-  const [parsedPgns, setParsedPgns] = useState<ParsedPGN[]>([]);
+  const [games, setGames] = useState<{ [key: string]: Chess }>({});
   const [isLoading, setIsLoading] = useState(false);
 
   const parseAllFiles = useCallback(async () => {
@@ -28,7 +29,7 @@ export const PgnProvider = ({ children }: PropsWithChildren) => {
 
     const endtimes: string[] = [];
 
-    const pgns = data
+    const games = data
       .flatMap((barr) => {
         return parse(decoder.decode(barr));
       })
@@ -46,38 +47,35 @@ export const PgnProvider = ({ children }: PropsWithChildren) => {
         return false;
       })
       .map((pgn) => {
-        const chess = new Chess();
-
-        const movesWithFen = pgn.moves.map((move) => {
-          chess.move(move.move);
-          const fen = chess.fen();
-
-          return {
-            ...move,
-            comments: [fen],
-          };
-        });
-
-        return {
-          ...pgn,
-          moves: movesWithFen,
-        };
+        return parsedPgnToChessJs(pgn);
       });
+
+    const gamesObj: { [key: string]: Chess } = {};
+
+    games.forEach((game) => {
+      const headers = game.header();
+      const idx = (headers["Date"] as string)
+        .concat(headers["EndTime"] as string)
+        .concat(headers["White"] as string)
+        .concat(headers["Black"] as string);
+
+      gamesObj[idx] = game;
+    });
 
     setIsLoading(false);
 
-    return pgns;
+    return gamesObj;
   }, [publicFiles, readFile]);
 
   const searchPositions = useCallback(
-    (fen: string): [ParsedPGN, number][] => {
-      const games: [ParsedPGN, number][] = [];
+    (fen: string): [Chess, number][] => {
+      const matchingGames: [Chess, number][] = [];
 
-      for (const pgn of parsedPgns) {
+      for (const game of Object.values(games)) {
         let index = 0;
-        for (const move of pgn.moves) {
-          if (fen.split("-")[0] === move.comments[0].split("-")[0]) {
-            games.push([pgn, index]);
+        for (const move of game.history({ verbose: true })) {
+          if (fen.split("-")[0] === move.after.split("-")[0]) {
+            matchingGames.push([game, index]);
             continue;
           }
 
@@ -85,23 +83,31 @@ export const PgnProvider = ({ children }: PropsWithChildren) => {
         }
       }
 
-      return games;
+      return matchingGames;
     },
-    [parsedPgns],
+    [games],
+  );
+
+  const getGame = useCallback(
+    (idx: string) => {
+      return games[idx] ?? null;
+    },
+    [games],
   );
 
   const value: PgnProviderContext = useMemo(
     () => ({
       isLoading,
-      pgns: parsedPgns,
+      games: Object.values(games),
       searchPositions,
+      getGame,
     }),
-    [isLoading, parsedPgns, searchPositions],
+    [isLoading, games, searchPositions, getGame],
   );
 
   useEffect(() => {
-    parseAllFiles().then((pgns) => {
-      setParsedPgns(pgns);
+    parseAllFiles().then((games) => {
+      setGames(games);
     });
   }, [parseAllFiles]);
 

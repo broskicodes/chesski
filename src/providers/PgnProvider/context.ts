@@ -1,17 +1,20 @@
-import { ParsedPGN } from "pgn-parser";
+import { Chess } from "chess.js";
 import { createContext, useContext } from "react";
-import { PgnFile } from "../FileGalleryProvider";
 
 export interface PgnProviderContext {
   isLoading: boolean;
-  pgns: ParsedPGN[];
-  searchPositions: (fen: string) => [ParsedPGN, number][];
+  games: Chess[];
+  searchPositions: (fen: string) => [Chess, number][];
+  getGame: (idx: string) => Chess | null;
 }
 
 export const PgnContext = createContext<PgnProviderContext>({
   isLoading: false,
-  pgns: [],
+  games: [],
   searchPositions: (_fen) => {
+    throw new Error("PgnProvider not initialized");
+  },
+  getGame: (_idx) => {
     throw new Error("PgnProvider not initialized");
   },
 });

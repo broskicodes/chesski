@@ -8,18 +8,20 @@ import {
 } from "react";
 import { useNotifications } from "../NotificationProvider";
 import { SesionContext, SessionProviderContext } from "./context";
+import { path } from "@oddjs/odd";
 
 export const SessionProvider = ({ children }: PropsWithChildren) => {
-  const { newAlert } = useNotifications();
+  const { newAlert, addNotification } = useNotifications();
   const [program, setProgram] = useState<odd.Program | null>(null);
   const [session, setSession] = useState<odd.Session | null>(null);
+  const [chessComUsername, setChessComUsername] = useState<string | null>(null);
 
   const isConnected = useCallback(() => {
     return !!session;
   }, [session]);
 
   const connect = useCallback(
-    async (username: string) => {
+    async (username: string, pgnName: string) => {
       if (!program) {
         console.error("No program");
         return false;
@@ -33,20 +35,29 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
       const valid = await program.auth.isUsernameValid(username);
       const available = await program.auth.isUsernameAvailable(username);
 
-      console.log(valid, available);
       if (valid && available) {
         const { success } = await program.auth.register({ username });
 
         if (success) {
-          setSession(await program.auth.session());
+          const session = await program.auth.session();
+          setSession(session);
+          setChessComUsername(pgnName);
+
+          await session?.fs?.write(
+            path.file("public", "pgnname"),
+            Buffer.from(pgnName),
+          );
+          await session?.fs?.publish();
 
           return true;
         }
+      } else {
+        addNotification({ type: "error", msg: "Username unavailable" });
       }
 
       return false;
     },
-    [program, session],
+    [program, session, addNotification],
   );
 
   const disconnect = useCallback(async () => {
@@ -66,18 +77,20 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
     ) {
       await session.destroy();
       setSession(null);
+      setChessComUsername(null);
     }
   }, [program, session, newAlert]);
 
   const value: SessionProviderContext = useMemo(
     () => ({
       username: session?.username ?? null,
+      chessComUsername,
       fs: session?.fs ?? null,
       isConnected,
       connect,
       disconnect,
     }),
-    [session, isConnected, connect, disconnect],
+    [session, chessComUsername, isConnected, connect, disconnect],
   );
 
   useEffect(() => {
@@ -102,6 +115,11 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     if (program && program.session) {
       setSession(program.session);
+
+      program.session.fs?.read(path.file("public", "pgnname")).then((data) => {
+        const decoder = new TextDecoder("utf-8");
+        setChessComUsername(decoder.decode(data));
+      });
     }
   }, [program]);
 

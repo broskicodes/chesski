@@ -10,9 +10,12 @@ export const NotificationProvider = ({ children }: PropsWithChildren) => {
   const [notifs, setNotifs] = useState<Notification[]>([]);
   const [alert, setAlert] = useState<Alert | null>(null);
 
-  const removeNotification = useCallback((id: string) => {
-    setNotifs(notifs.filter((notif) => notif.id !== id));
-  }, [notifs]);
+  const removeNotification = useCallback(
+    (id: string) => {
+      setNotifs(notifs.filter((notif) => notif.id !== id));
+    },
+    [notifs],
+  );
 
   const newAlert = useCallback((msg: string): Promise<boolean> => {
     return new Promise((resolve) => {
@@ -30,26 +33,29 @@ export const NotificationProvider = ({ children }: PropsWithChildren) => {
     });
   }, []);
 
-  const addNotification = useCallback((notif: Notification) => {
-    if (!notif.msg) {
-      return;
-    }
+  const addNotification = useCallback(
+    (notif: Notification) => {
+      if (!notif.msg) {
+        return;
+      }
 
-    const id = Math.random().toString();
-    const newNotif = {
-      ...notif,
-      id,
-      type: notif.type ?? "info",
-      timeout: notif.timeout ?? 3000,
-    };
+      const id = Math.random().toString();
+      const newNotif = {
+        ...notif,
+        id,
+        type: notif.type ?? "info",
+        timeout: notif.timeout ?? 3000,
+      };
 
-    setNotifs([...notifs, newNotif]);
+      setNotifs([...notifs, newNotif]);
 
-    const timer = setTimeout(() => {
-      removeNotification(id);
-      clearTimeout(timer);
-    }, newNotif.timeout);
-  }, [notifs, removeNotification]);
+      const timer = setTimeout(() => {
+        removeNotification(id);
+        clearTimeout(timer);
+      }, newNotif.timeout);
+    },
+    [notifs, removeNotification],
+  );
 
   const value: NotificationProviderContext = useMemo(
     () => ({

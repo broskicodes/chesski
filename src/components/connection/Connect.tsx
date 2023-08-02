@@ -5,6 +5,7 @@ import { ConnectButton } from "./ConnectButton";
 export const Connect = () => {
   const { isConnected, username } = useSession();
   const [userInput, setUserInput] = useState("");
+  const [pgnInput, setPgnInput] = useState("");
 
   return (
     <div>
@@ -23,7 +24,18 @@ export const Connect = () => {
               }}
             />
           </span>
-          <ConnectButton username={userInput} />
+          <span>
+            <label htmlFor="pgnName">Name in PGN: </label>
+            <input
+              id="pgnName"
+              type="text"
+              value={pgnInput}
+              onChange={({ target }) => {
+                setPgnInput(target.value);
+              }}
+            />
+          </span>
+          <ConnectButton username={userInput} pgnName={pgnInput} />
         </div>
       )}
     </div>
