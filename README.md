@@ -20,5 +20,5 @@ A cautionary note: this app is a work in progress! I expect it to change rapidly
 
 ## How to get in touch
 - Dm me on twitter (X?) [@_broskitweets](https://twitter.com/_broskitweets)
-- Pm me discord [@lifeofsquinting](https://discord.com/)
+- Join the [discord](https://discord.gg/Ayn7JUHnzh)
 - If those don't work fucking WhatsApp msg me (1-613-986-0904)

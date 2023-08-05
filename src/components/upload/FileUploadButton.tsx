@@ -7,7 +7,7 @@ import { Button } from "../Button";
 import { useRef } from "react";
 
 export const FileUploadButton = () => {
-  const { loading, writeFile } = useGallery();
+  const { loading, parsePgnToFiles } = useGallery();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   return (
@@ -38,7 +38,7 @@ export const FileUploadButton = () => {
 
               await Promise.all(
                 Array.from(files).map(async (file) => {
-                  await writeFile(file.name, await fileToUint8Array(file));
+                  await parsePgnToFiles(await fileToUint8Array(file));
                 }),
               );
             }}

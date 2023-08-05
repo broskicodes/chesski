@@ -1,3 +1,4 @@
+import { path } from "@oddjs/odd";
 import { Chess } from "chess.js";
 import { parse, ParsedPGN } from "pgn-parser";
 import {
@@ -13,54 +14,29 @@ import { PgnContext, PgnProviderContext } from "./context";
 
 export const PgnProvider = ({ children }: PropsWithChildren) => {
   const { publicFiles, readFile } = useGallery();
-  const [games, setGames] = useState<{ [key: string]: Chess }>({});
+  const [games, setGames] = useState<{ [key: string]: Chess[] }>({});
   const [isLoading, setIsLoading] = useState(false);
 
   const parseAllFiles = useCallback(async () => {
     setIsLoading(true);
+    const decoder = new TextDecoder("utf-8");
+    const gamesObj: { [key: string]: Chess[] } = {};
 
-    const data = await Promise.all(
+    await Promise.all(
       publicFiles.map(async (file) => {
-        return await readFile(file.name);
+        const pathDirs = path.parent(file.path).directory;
+        const gameType = pathDirs[pathDirs.length - 1];
+        const data = await readFile(file.path);
+        const game = new Chess();
+        game.loadPgn(decoder.decode(data));
+
+        if (Object.keys(gamesObj).includes(gameType)) {
+          gamesObj[gameType].push(game);
+        } else {
+          gamesObj[gameType] = [game];
+        }
       }),
     );
-
-    const decoder = new TextDecoder("utf-8");
-
-    const endtimes: string[] = [];
-
-    const games = data
-      .flatMap((barr) => {
-        return parse(decoder.decode(barr));
-      })
-      .filter((pgn) => {
-        const time = (pgn.headers?.at(10)?.value as string)
-          .concat(pgn.headers?.at(2)?.value as string)
-          .concat(pgn.headers?.at(4)?.value as string)
-          .concat(pgn.headers?.at(5)?.value as string);
-
-        if (!endtimes.includes(time)) {
-          endtimes.push(time);
-          return true;
-        }
-
-        return false;
-      })
-      .map((pgn) => {
-        return parsedPgnToChessJs(pgn);
-      });
-
-    const gamesObj: { [key: string]: Chess } = {};
-
-    games.forEach((game) => {
-      const headers = game.header();
-      const idx = (headers["Date"] as string)
-        .concat(headers["EndTime"] as string)
-        .concat(headers["White"] as string)
-        .concat(headers["Black"] as string);
-
-      gamesObj[idx] = game;
-    });
 
     setIsLoading(false);
 
@@ -71,7 +47,7 @@ export const PgnProvider = ({ children }: PropsWithChildren) => {
     (fen: string): [Chess, number][] => {
       const matchingGames: [Chess, number][] = [];
 
-      for (const game of Object.values(games)) {
+      for (const game of Object.values(games).flat()) {
         let index = 0;
         for (const move of game.history({ verbose: true })) {
           if (fen.split("-")[0] === move.after.split("-")[0]) {
@@ -98,9 +74,9 @@ export const PgnProvider = ({ children }: PropsWithChildren) => {
   const value: PgnProviderContext = useMemo(
     () => ({
       isLoading,
-      games: Object.values(games),
+      games: games,
       searchPositions,
-      getGame,
+      // getGame,
     }),
     [isLoading, games, searchPositions, getGame],
   );
@@ -110,10 +86,6 @@ export const PgnProvider = ({ children }: PropsWithChildren) => {
       setGames(games);
     });
   }, [parseAllFiles]);
-
-  // useEffect(() => {
-  //   console.log(parsedPgns);
-  // }, [parsedPgns]);
 
   return <PgnContext.Provider value={value}>{children}</PgnContext.Provider>;
 };

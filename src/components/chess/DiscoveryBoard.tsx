@@ -34,7 +34,7 @@ export const DiscoveryBoard = () => {
     const games = searchPositions(fen);
     setTranspositions(games);
 
-    console.log(fen);
+    // console.log(fen);
   }, [game, searchPositions]);
 
   return (

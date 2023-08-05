@@ -19,7 +19,7 @@ type Props = {
 };
 
 const Dropzone = ({ children }: Props) => {
-  const { writeFile } = useGallery();
+  const { parsePgnToFiles } = useGallery();
   const { addNotification } = useNotifications();
   const [isDragging, setIsDragging] = useState(false);
 
@@ -53,7 +53,7 @@ const Dropzone = ({ children }: Props) => {
               type: "error",
             });
           } else {
-            await writeFile(file.name, await fileToUint8Array(file));
+            await parsePgnToFiles(await fileToUint8Array(file));
           }
         }
       }),
