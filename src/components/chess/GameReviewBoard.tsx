@@ -15,14 +15,14 @@ interface Props {
 export const GameReviewBoard = ({ gameIdx, orientation }: Props) => {
   const { undo, game, reset, makeMove } = useChessboard();
   const { chessComUsername } = useSession();
-  const { getGame, isLoading } = usePgns();
+  const { isLoading } = usePgns();
   const [moveHistory, setMoveHistory] = useState<Move[]>([]);
   const [nextMove, setNextMove] = useState<Move | null>(null);
 
   useEffect(() => {
-    const game = getGame(gameIdx);
+    // const game = getGame(gameIdx);
     setMoveHistory(game?.history({ verbose: true }) ?? []);
-  }, [gameIdx, getGame]);
+  }, [gameIdx]);
 
   useEffect(() => {
     for (const move of moveHistory) {

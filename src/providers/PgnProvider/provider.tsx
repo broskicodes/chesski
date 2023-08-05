@@ -78,7 +78,7 @@ export const PgnProvider = ({ children }: PropsWithChildren) => {
       searchPositions,
       // getGame,
     }),
-    [isLoading, games, searchPositions, getGame],
+    [isLoading, games, searchPositions],
   );
 
   useEffect(() => {

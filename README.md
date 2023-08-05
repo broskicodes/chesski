@@ -5,7 +5,7 @@ The goal of this project is a lot of things, the main idea:
 
 - An app that will help you improve at chess by reviewing your previous games
 
-Simple. Except that's not all it is. I also wanna explore decentralized app development. Puting users in control of their data. So this app will (attempt to) refrain from using centralized servers or databases to store data or run computations. The [@Fission](https://fission.codes/) suite of tools will help __a lot__ with this.
+Simple. Except that's not all it is. I also wanna explore decentralized app development. Puting users in control of their data. So this app will (attempt to) refrain from using centralized servers or databases to store data or run computations. I'm using the suite of tools developed by the [Fission](https://fission.codes/) team to accomplish this.
 
 ## How does it work
 
