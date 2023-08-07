@@ -95,7 +95,7 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
 
   useEffect(() => {
     odd
-      .program({ namespace: "broski-chess" })
+      .program({ namespace: "chesski" })
       .then((prog) => {
         setProgram(prog);
       })

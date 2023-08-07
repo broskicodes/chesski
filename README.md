@@ -16,7 +16,7 @@ Simple. Except that's not all it is. I also wanna explore decentralized app deve
 
 ## Work in progress
 
-A cautionary note: this app is a work in progress! I expect it to change rapidly as the idea developes further. __Feddback and feature requests are encouraged.__ Currently I am building this as a tool that will be useful to me, if you have ideas on how it could be more useful yto **YOU** please lkm :)
+A cautionary note: this app is a work in progress! I expect it to change rapidly as the idea developes further. __Feddback and feature requests are encouraged.__ Currently I am building this as a tool that will be useful to me, if you have ideas on how it could be more useful to **YOU** please lkm :)
 
 ## How to get in touch
 - Dm me on twitter (X?) [@_broskitweets](https://twitter.com/_broskitweets)
