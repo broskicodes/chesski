@@ -62,12 +62,13 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
 
   const disconnect = useCallback(async () => {
     if (!program) {
-      return;
+      addNotification({ type: "error", msg: "No user connected" });
+      throw new Error("No user connected");
     }
 
     if (!session) {
-      console.error("Not connected");
-      return;
+      addNotification({ type: "error", msg: "No user connected" });
+      throw new Error("No user connected");
     }
 
     if (
@@ -79,7 +80,43 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
       setSession(null);
       setChessComUsername(null);
     }
-  }, [program, session, newAlert]);
+  }, [program, session, addNotification, newAlert]);
+
+  const getAccountProducer = useCallback(async () => {
+    if (!program) {
+      throw new Error("Server error. Program not initialized properly");
+    }
+
+    if (!session) {
+      throw new Error("No user connected");
+    }
+
+    return await program.auth.accountProducer(session.username);
+  }, [program, session]);
+
+  const getAccountConsumer = useCallback(
+    async (username: string) => {
+      if (!program) {
+        throw new Error("Server error. Program not initialized properly");
+      }
+
+      if (session) {
+        throw new Error("User already connected");
+      }
+
+      const consumer = await program.auth.accountConsumer(username);
+
+      consumer.on("link", async ({ approved, username }) => {
+        if (approved) {
+          console.log(`Successfully authenticated as ${username}`);
+          setSession(await program.auth.session());
+        }
+      });
+
+      return consumer;
+    },
+    [program, session],
+  );
 
   const value: SessionProviderContext = useMemo(
     () => ({
@@ -89,8 +126,18 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
       isConnected,
       connect,
       disconnect,
+      getAccountProducer,
+      getAccountConsumer,
     }),
-    [session, chessComUsername, isConnected, connect, disconnect],
+    [
+      session,
+      chessComUsername,
+      isConnected,
+      connect,
+      disconnect,
+      getAccountProducer,
+      getAccountConsumer,
+    ],
   );
 
   useEffect(() => {

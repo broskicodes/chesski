@@ -1,4 +1,8 @@
-import type { FileSystem } from "@oddjs/odd";
+import type {
+  AccountLinkingConsumer,
+  AccountLinkingProducer,
+  FileSystem,
+} from "@oddjs/odd";
 import { createContext, useContext } from "react";
 
 export interface SessionProviderContext {
@@ -8,6 +12,8 @@ export interface SessionProviderContext {
   isConnected: () => boolean;
   connect: (username: string, pgnNmae: string) => Promise<boolean>;
   disconnect: () => void;
+  getAccountProducer: () => Promise<AccountLinkingProducer>;
+  getAccountConsumer: (username: string) => Promise<AccountLinkingConsumer>;
 }
 
 export const SesionContext = createContext<SessionProviderContext>({
@@ -21,6 +27,12 @@ export const SesionContext = createContext<SessionProviderContext>({
     throw new Error("SessionProvider not initialized");
   },
   disconnect: () => {
+    throw new Error("SessionProvider not initialized");
+  },
+  getAccountProducer: () => {
+    throw new Error("SessionProvider not initialized");
+  },
+  getAccountConsumer: (_username) => {
     throw new Error("SessionProvider not initialized");
   },
 });

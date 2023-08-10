@@ -1,5 +1,10 @@
 import { createContext, useContext } from "react";
-import type { FilePath, SegmentsNonEmpty, PartitionedNonEmpty, Partition } from "@oddjs/odd/path/index"
+import type {
+  FilePath,
+  SegmentsNonEmpty,
+  PartitionedNonEmpty,
+  Partition,
+} from "@oddjs/odd/path/index";
 
 export enum GameType {
   Bullet = "bullet",
@@ -57,9 +62,14 @@ export interface PgnFile {
 export interface GalleryProviderContext {
   publicFiles: PgnFile[];
   loading: boolean;
-  writeFile: (filePath: FilePath<SegmentsNonEmpty>, data: Uint8Array) => Promise<void>;
+  writeFile: (
+    filePath: FilePath<SegmentsNonEmpty>,
+    data: Uint8Array,
+  ) => Promise<void>;
   parsePgnToFiles: (pgnData: Uint8Array) => Promise<void>;
-  readFile: (filePath: FilePath<PartitionedNonEmpty<Partition>>) => Promise<Uint8Array>;
+  readFile: (
+    filePath: FilePath<PartitionedNonEmpty<Partition>>,
+  ) => Promise<Uint8Array>;
 }
 
 export const GalleryContext = createContext<GalleryProviderContext>({
