@@ -8,8 +8,8 @@ import { Header } from "../Header";
 
 export const AnalysisRenderer = () => {
   const { isConnected } = useSession();
-  const router = useRouter();
-  const { gameIdx, orientation } = router.query;
+  const { query } = useRouter();
+  const { gameIdx, orientation } = query;
 
   return (
     <div className="flex flex-col items-center h-full">

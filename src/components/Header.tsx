@@ -1,15 +1,23 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { Button } from "./Button";
 import { Connect } from "./connection/Connect";
 import { DisconnectButton } from "./connection/DisconnectButton";
 
 export const Header = () => {
+  const router = useRouter();
   return (
     <div className="mt-4 flex flex-col items-center space-y-2 mb-4">
       <Link href={"/"} className="font-bold text-2xl">
         Chesski
       </Link>
       <Connect />
-      <DisconnectButton />
+      <div className="flex flex-row space-x-2">
+        <DisconnectButton />
+        <Button onClick={() => router.push("/connect-device/authed")}>
+          Link a device
+        </Button>
+      </div>
     </div>
   );
 };

@@ -22,7 +22,7 @@ export const GameReviewBoard = ({ gameIdx, orientation }: Props) => {
   useEffect(() => {
     // const game = getGame(gameIdx);
     setMoveHistory(game?.history({ verbose: true }) ?? []);
-  }, [gameIdx]);
+  }, [game, gameIdx]);
 
   useEffect(() => {
     for (const move of moveHistory) {

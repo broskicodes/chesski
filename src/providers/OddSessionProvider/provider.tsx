@@ -9,12 +9,14 @@ import {
 import { useNotifications } from "../NotificationProvider";
 import { SesionContext, SessionProviderContext } from "./context";
 import { path } from "@oddjs/odd";
+import { useRouter } from "next/router";
 
 export const SessionProvider = ({ children }: PropsWithChildren) => {
   const { newAlert, addNotification } = useNotifications();
   const [program, setProgram] = useState<odd.Program | null>(null);
   const [session, setSession] = useState<odd.Session | null>(null);
   const [chessComUsername, setChessComUsername] = useState<string | null>(null);
+  const router = useRouter();
 
   const isConnected = useCallback(() => {
     return !!session;
@@ -62,24 +64,67 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
 
   const disconnect = useCallback(async () => {
     if (!program) {
-      return;
+      addNotification({ type: "error", msg: "No user connected" });
+      throw new Error("No user connected");
     }
 
     if (!session) {
-      console.error("Not connected");
-      return;
+      addNotification({ type: "error", msg: "No user connected" });
+      throw new Error("No user connected");
     }
 
     if (
       await newAlert(
-        "In disconnecting you will lose access to all of your data. Continue?",
+        "In proceeding you will lose access to all of your stored data on this device. Please ensure you have a backup before continuing.",
+        "confirm",
       )
     ) {
       await session.destroy();
       setSession(null);
       setChessComUsername(null);
     }
-  }, [program, session, newAlert]);
+  }, [program, session, addNotification, newAlert]);
+
+  const getAccountProducer = useCallback(async () => {
+    if (!program) {
+      throw new Error("Server error. Program not initialized properly");
+    }
+
+    if (!session) {
+      throw new Error("No user connected");
+    }
+
+    return await program.auth.accountProducer(session.username);
+  }, [program, session]);
+
+  const getAccountConsumer = useCallback(
+    async (username: string) => {
+      if (!program) {
+        throw new Error("Server error. Program not initialized properly");
+      }
+
+      if (session) {
+        throw new Error("A user is already connected");
+      }
+
+      const consumer = await program.auth.accountConsumer(username);
+
+      consumer.on("link", async ({ approved, username }) => {
+        if (approved) {
+          setSession(await program.auth.session());
+          router.push(`/?authed=${username}`, "/");
+        } else {
+          addNotification({
+            msg: "Link was refused by authenticated device ",
+            type: "warning",
+          });
+        }
+      });
+
+      return consumer;
+    },
+    [program, session, addNotification, router],
+  );
 
   const value: SessionProviderContext = useMemo(
     () => ({
@@ -89,8 +134,18 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
       isConnected,
       connect,
       disconnect,
+      getAccountProducer,
+      getAccountConsumer,
     }),
-    [session, chessComUsername, isConnected, connect, disconnect],
+    [
+      session,
+      chessComUsername,
+      isConnected,
+      connect,
+      disconnect,
+      getAccountProducer,
+      getAccountConsumer,
+    ],
   );
 
   useEffect(() => {

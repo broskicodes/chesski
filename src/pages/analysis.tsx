@@ -1,18 +1,15 @@
 import type { NextPage } from "next";
+import { Page } from "../components/Page";
 import { AnalysisRenderer } from "../components/renderers/AnalysisRenderer";
-import { NotificationProvider } from "../providers/NotificationProvider";
-import { SessionProvider } from "../providers/OddSessionProvider";
 
-const Home: NextPage = () => {
+const AnaylisPage: NextPage = () => {
   return (
     <div className={"container mx-auto h-screen"}>
-      <NotificationProvider>
-        <SessionProvider>
-          <AnalysisRenderer />
-        </SessionProvider>
-      </NotificationProvider>
+      <Page>
+        <AnalysisRenderer />
+      </Page>
     </div>
   );
 };
 
-export default Home;
+export default AnaylisPage;
