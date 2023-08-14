@@ -9,12 +9,14 @@ import {
 import { useNotifications } from "../NotificationProvider";
 import { SesionContext, SessionProviderContext } from "./context";
 import { path } from "@oddjs/odd";
+import { useRouter } from "next/router";
 
 export const SessionProvider = ({ children }: PropsWithChildren) => {
   const { newAlert, addNotification } = useNotifications();
   const [program, setProgram] = useState<odd.Program | null>(null);
   const [session, setSession] = useState<odd.Session | null>(null);
   const [chessComUsername, setChessComUsername] = useState<string | null>(null);
+  const router = useRouter();
 
   const isConnected = useCallback(() => {
     return !!session;
@@ -73,7 +75,8 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
 
     if (
       await newAlert(
-        "In disconnecting you will lose access to all of your data. Continue?",
+        "In proceeding you will lose access to all of your stored data on this device. Please ensure you have a backup before continuing.",
+        "confirm"
       )
     ) {
       await session.destroy();
@@ -101,21 +104,23 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
       }
 
       if (session) {
-        throw new Error("User already connected");
+        throw new Error("A user is already connected");
       }
 
       const consumer = await program.auth.accountConsumer(username);
 
       consumer.on("link", async ({ approved, username }) => {
         if (approved) {
-          console.log(`Successfully authenticated as ${username}`);
           setSession(await program.auth.session());
+          router.push(`/?authed=${username}`, "/")
+        } else {
+          addNotification({ msg: "Link was refused by authenticated device ", type: "warning" });
         }
       });
 
       return consumer;
     },
-    [program, session],
+    [program, session, addNotification],
   );
 
   const value: SessionProviderContext = useMemo(

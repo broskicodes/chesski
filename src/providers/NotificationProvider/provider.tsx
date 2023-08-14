@@ -4,6 +4,7 @@ import {
   Notification,
   NotificationProviderContext,
   Alert,
+  AlertType,
 } from "./context";
 
 export const NotificationProvider = ({ children }: PropsWithChildren) => {
@@ -17,7 +18,7 @@ export const NotificationProvider = ({ children }: PropsWithChildren) => {
     [notifs],
   );
 
-  const newAlert = useCallback((msg: string): Promise<boolean> => {
+  const newAlert = useCallback((msg: string, type: AlertType): Promise<boolean> => {
     return new Promise((resolve) => {
       const handleConfirm = () => {
         setAlert(null);
@@ -29,7 +30,7 @@ export const NotificationProvider = ({ children }: PropsWithChildren) => {
         resolve(false);
       };
 
-      setAlert({ msg, onCancel: handleCancel, onConfirm: handleConfirm });
+      setAlert({ msg, type, onCancel: handleCancel, onConfirm: handleConfirm });
     });
   }, []);
 

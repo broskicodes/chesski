@@ -12,8 +12,10 @@
   "dependencies": {
     "@oddjs/odd": "^0.37.2",
     "chess.js": "^1.0.0-beta.6",
+    "clipboard-copy": "^4.0.1",
     "next": "13.4.10",
     "pgn-parser": "^2.2.0",
+    "qrcode.react": "^3.1.0",
     "react": "18.2.0",
     "react-chessboard": "^4.0.0",
     "react-dom": "18.2.0",

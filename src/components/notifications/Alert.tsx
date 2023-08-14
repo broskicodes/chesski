@@ -11,8 +11,10 @@ const AlertComp = ({ alert }: Props) => {
       <div className="bg-white h-48 w-96 rounded-2xl flex flex-col justify-center items-center">
         <p className="px-4">{alert.msg}</p>
         <div className="flex flex-row justify-around w-full mt-6">
-          <Button onClick={alert.onCancel}>Cancel</Button>
-          <Button onClick={alert.onConfirm}>Confirm</Button>
+          {alert.type === "confirm" 
+            ? <span className="flex flex-row justify-around w-full"><Button onClick={alert.onConfirm}>Confirm</Button><Button onClick={alert.onCancel}>Cancel</Button>
+              </span>
+            : <Button onClick={alert.onConfirm}>Ok</Button>}
         </div>
       </div>
     </div>

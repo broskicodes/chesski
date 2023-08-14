@@ -10,8 +10,11 @@ export interface Notification {
   timeout?: number;
 }
 
+export type AlertType = "confirm" | "default";
+
 export interface Alert {
   msg: string;
+  type: AlertType;
   onConfirm: () => void;
   onCancel: () => void;
 }
@@ -21,7 +24,7 @@ export interface NotificationProviderContext {
   alert: Alert | null;
   addNotification: (notif: Notification) => void;
   removeNotification: (id: string) => void;
-  newAlert: (msg: string) => Promise<boolean>;
+  newAlert: (msg: string, type: AlertType) => Promise<boolean>;
 }
 
 export const NotificationContext = createContext<NotificationProviderContext>({
@@ -33,7 +36,7 @@ export const NotificationContext = createContext<NotificationProviderContext>({
   removeNotification: (_id) => {
     throw new Error("NotificationProvider not initialized");
   },
-  newAlert: (_msg) => {
+  newAlert: (_msg, _type) => {
     throw new Error("NotificationProvider not initialized");
   },
 });
