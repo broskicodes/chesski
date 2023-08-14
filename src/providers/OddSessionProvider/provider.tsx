@@ -76,7 +76,7 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
     if (
       await newAlert(
         "In proceeding you will lose access to all of your stored data on this device. Please ensure you have a backup before continuing.",
-        "confirm"
+        "confirm",
       )
     ) {
       await session.destroy();
@@ -112,15 +112,18 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
       consumer.on("link", async ({ approved, username }) => {
         if (approved) {
           setSession(await program.auth.session());
-          router.push(`/?authed=${username}`, "/")
+          router.push(`/?authed=${username}`, "/");
         } else {
-          addNotification({ msg: "Link was refused by authenticated device ", type: "warning" });
+          addNotification({
+            msg: "Link was refused by authenticated device ",
+            type: "warning",
+          });
         }
       });
 
       return consumer;
     },
-    [program, session, addNotification],
+    [program, session, addNotification, router],
   );
 
   const value: SessionProviderContext = useMemo(

@@ -8,16 +8,15 @@ export const NewDeviceRenderer = () => {
   const { query } = useRouter();
   const { newAlert } = useNotifications();
   const [pin, setPin] = useState<number[]>([]);
-  const [loading, setLoading]= useState(false);
-  const [consumerCreated, setConsumerCreated]= useState(false);
+  const [loading, setLoading] = useState(false);
+  const [consumerCreated, setConsumerCreated] = useState(false);
 
   const displayPin = useCallback(() => {
     return <div>{pin.join("")}</div>;
   }, [pin]);
 
   const renderDisconnected = useCallback(async () => {
-    if (consumerCreated) 
-      return;
+    if (consumerCreated) return;
 
     const { username } = query;
 
@@ -43,22 +42,24 @@ export const NewDeviceRenderer = () => {
           break;
         default:
           console.error(e);
-      }    
+      }
     }
 
     setLoading(false);
   }, [query, getAccountConsumer, consumerCreated]);
 
   useEffect(() => {
-    if (!loading)
-      renderDisconnected();
+    if (!loading) renderDisconnected();
   }, [renderDisconnected, loading]);
 
   useEffect(() => {
     if (username) {
-      newAlert(`You are currently connected as user "${username}". Proceeding will result in loss of access to data for that user.`, "default")
+      newAlert(
+        `You are currently connected as user "${username}". Proceeding will result in loss of access to data for that user.`,
+        "default",
+      );
     }
-  }, [username, newAlert])
+  }, [username, newAlert]);
 
   return (
     <div className="flex flex-col items-center justify-center h-full">
@@ -66,7 +67,7 @@ export const NewDeviceRenderer = () => {
         <p>Your connection pin is</p>
         <span className="font-bold text-4xl">{displayPin()}</span>
         <p>Please use other device to confirm.</p>
-        </div>
+      </div>
     </div>
   );
 };

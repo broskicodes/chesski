@@ -23,12 +23,14 @@ export const IndexRenderer = () => {
     if (authed) {
       if (authed === "1") {
         addNotification({ msg: "Device linked successfully", type: "success" });
-      }
-      else {
-        addNotification({ msg: `Successfully authenticated as ${authed}`, type: "success" });
+      } else {
+        addNotification({
+          msg: `Successfully authenticated as ${authed}`,
+          type: "success",
+        });
       }
     }
-  }, [query])
+  }, [query]);
 
   return (
     <div className="flex flex-col items-center h-full">

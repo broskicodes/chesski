@@ -18,21 +18,29 @@ export const NotificationProvider = ({ children }: PropsWithChildren) => {
     [notifs],
   );
 
-  const newAlert = useCallback((msg: string, type: AlertType): Promise<boolean> => {
-    return new Promise((resolve) => {
-      const handleConfirm = () => {
-        setAlert(null);
-        resolve(true);
-      };
+  const newAlert = useCallback(
+    (msg: string, type: AlertType): Promise<boolean> => {
+      return new Promise((resolve) => {
+        const handleConfirm = () => {
+          setAlert(null);
+          resolve(true);
+        };
 
-      const handleCancel = () => {
-        setAlert(null);
-        resolve(false);
-      };
+        const handleCancel = () => {
+          setAlert(null);
+          resolve(false);
+        };
 
-      setAlert({ msg, type, onCancel: handleCancel, onConfirm: handleConfirm });
-    });
-  }, []);
+        setAlert({
+          msg,
+          type,
+          onCancel: handleCancel,
+          onConfirm: handleConfirm,
+        });
+      });
+    },
+    [],
+  );
 
   const addNotification = useCallback(
     (notif: Notification) => {
