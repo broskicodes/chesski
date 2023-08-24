@@ -1,0 +1,39 @@
+{
+  "name": "chess",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "yarn stockfish && next build",
+    "start": "next start",
+    "lint": "next lint",
+    "fmt:fix": "prettier --write ./src",
+    "stockfish": "cd public && rm -rf nmrugg_stockfish_js && cp -r ../node_modules/stockfish/src nmrugg_stockfish_js && cd .."
+  },
+  "dependencies": {
+    "@oddjs/odd": "^0.37.2",
+    "@vercel/analytics": "^1.0.2",
+    "chess.js": "^1.0.0-beta.6",
+    "clipboard-copy": "^4.0.1",
+    "next": "13.4.10",
+    "pgn-parser": "^2.2.0",
+    "qrcode.react": "^3.1.0",
+    "react": "18.2.0",
+    "react-chessboard": "^4.0.0",
+    "react-dom": "18.2.0",
+    "react-spring": "^9.7.2",
+    "stockfish": "15.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "20.4.2",
+    "@types/pgn-parser": "^2.1.0",
+    "@types/react": "18.2.15",
+    "autoprefixer": "^10.4.14",
+    "eslint": "8.45.0",
+    "eslint-config-next": "13.4.10",
+    "postcss": "^8.4.26",
+    "prettier": "^3.0.0",
+    "tailwindcss": "^3.3.3",
+    "typescript": "5.1.6"
+  }
+}
