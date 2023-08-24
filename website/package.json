@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "fmt:fix": "prettier --write ./src",
-    "stockfish": "cd public && rm -rf nmrugg_stockfish_js &&  ln -s ../node_modules/stockfish/src nmrugg_stockfish_js && cd .."
+    "stockfish": "cd public && rm -rf nmrugg_stockfish_js && cp -r ../node_modules/stockfish/src nmrugg_stockfish_js && cd .."
   },
   "dependencies": {
     "@oddjs/odd": "^0.37.2",
