@@ -20,7 +20,7 @@ const AlertComp = ({ alert }: Props) => {
         <div className={`px-4 absolute ${alert.title ? "top-16" : "top-8"}`}>
           {alert.msg}
         </div>
-        <div className="flex flex-row justify-around w-full mt-6 absolute bottom-4">
+        <div className="flex flex-row justify-around w-full mt-6 absolute bottom-6">
           {alert.type === "confirm" ? (
             <span className="flex flex-row justify-around w-full">
               <Button onClick={alert.onConfirm}>Yes</Button>
