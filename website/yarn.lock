@@ -3258,6 +3258,11 @@ source-map-js@^1.0.2:
   resolved "https://registry.yarnpkg.com/source-map-js/-/source-map-js-1.0.2.tgz#adbc361d9c62df380125e7f161f71c826f1e490c"
   integrity sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==
 
+stockfish@15.0.0:
+  version "15.0.0"
+  resolved "https://registry.yarnpkg.com/stockfish/-/stockfish-15.0.0.tgz#77ed84a6ab0a0d8750a0c04332abbe540c2a4fed"
+  integrity sha512-ze3vTgMrnCmMdtC8qpONBdXkSHWwv4Dx+GFV1V5TIi0qP1HF+Vwa4lArgqvHDooU8Mwfs1cgRzkW3SM8x/7TJg==
+
 streamsearch@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/streamsearch/-/streamsearch-1.1.0.tgz#404dd1e2247ca94af554e841a8ef0eaa238da764"

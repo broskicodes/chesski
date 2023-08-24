@@ -15,7 +15,7 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
   const { newAlert, addNotification } = useNotifications();
   const [program, setProgram] = useState<odd.Program | null>(null);
   const [session, setSession] = useState<odd.Session | null>(null);
-  const [chessComUsername, setChessComUsername] = useState<string | null>(null);
+  // const [chessComUsername, setChessComUsername] = useState<string | null>(null);
   const router = useRouter();
 
   const isConnected = useCallback(() => {
@@ -23,7 +23,7 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
   }, [session]);
 
   const connect = useCallback(
-    async (username: string, pgnName: string) => {
+    async (username: string) => {
       if (!program) {
         console.error("No program");
         return false;
@@ -43,13 +43,28 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
         if (success) {
           const session = await program.auth.session();
           setSession(session);
-          setChessComUsername(pgnName);
-
-          await session?.fs?.write(
-            path.file("public", "pgnname"),
-            Buffer.from(pgnName),
+          await newAlert(
+            "Chesski uses a keypair securely stored in ur browser to control access to ur account. No password needed :)",
+            "default",
+            "Wait... No password?",
           );
-          await session?.fs?.publish();
+
+          if (
+            await newAlert(
+              "Linking a device allows you to access your account on multiple devices. It's also the best way to backup your account. Link now?",
+              "confirm",
+              "Link a device!",
+            )
+          ) {
+            router.push("/link-device/authed");
+          }
+          // setChessComUsername(pgnName);
+
+          // await session?.fs?.write(
+          //   path.file("public", "pgnname"),
+          //   Buffer.from(pgnName),
+          // );
+          // await session?.fs?.publish();
 
           return true;
         }
@@ -59,7 +74,7 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
 
       return false;
     },
-    [program, session, addNotification],
+    [program, session, router, addNotification, newAlert],
   );
 
   const disconnect = useCallback(async () => {
@@ -75,13 +90,14 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
 
     if (
       await newAlert(
-        "In proceeding you will lose access to all of your stored data on this device. Please ensure you have a backup before continuing.",
+        "If you proceed, this device will lose access to your account and all its data. Please ensure you have linked at least one device before continuing.",
         "confirm",
+        "Leaving already?",
       )
     ) {
       await session.destroy();
       setSession(null);
-      setChessComUsername(null);
+      // setChessComUsername(null);
     }
   }, [program, session, addNotification, newAlert]);
 
@@ -129,7 +145,7 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
   const value: SessionProviderContext = useMemo(
     () => ({
       username: session?.username ?? null,
-      chessComUsername,
+      // chessComUsername,
       fs: session?.fs ?? null,
       isConnected,
       connect,
@@ -139,7 +155,7 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
     }),
     [
       session,
-      chessComUsername,
+      // chessComUsername,
       isConnected,
       connect,
       disconnect,
@@ -171,10 +187,10 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
     if (program && program.session) {
       setSession(program.session);
 
-      program.session.fs?.read(path.file("public", "pgnname")).then((data) => {
-        const decoder = new TextDecoder("utf-8");
-        setChessComUsername(decoder.decode(data));
-      });
+      // program.session.fs?.read(path.file("public", "pgnname")).then((data) => {
+      //   const decoder = new TextDecoder("utf-8");
+      //   setChessComUsername(decoder.decode(data));
+      // });
     }
   }, [program]);
 

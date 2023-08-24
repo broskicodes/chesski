@@ -3,16 +3,16 @@ import { Button } from "../Button";
 
 interface ConnectButtonProps {
   username: string;
-  pgnName: string;
+  // pgnName: string;
 }
 
-export const ConnectButton = ({ username, pgnName }: ConnectButtonProps) => {
+export const ConnectButton = ({ username }: ConnectButtonProps) => {
   const { connect } = useSession();
 
   return (
     <Button
       onClick={async () => {
-        await connect(username, pgnName);
+        await connect(username);
       }}
     >
       Connect

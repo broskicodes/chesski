@@ -71,7 +71,7 @@ export const AuthedDeviceRenderer = () => {
   useEffect(() => {
     const { protocol, host } = window.location;
     if (username)
-      setLink(`${protocol}//${host}/connect-device/new?username=${username}`);
+      setLink(`${protocol}//${host}/link-device/new?username=${username}`);
   }, [username]);
 
   return (

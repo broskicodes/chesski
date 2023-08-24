@@ -13,10 +13,10 @@ export const Header = () => {
       </Link>
       <Connect />
       <div className="flex flex-row space-x-2">
-        <DisconnectButton />
         <Button onClick={() => router.push("/connect-device/authed")}>
           Link a device
         </Button>
+        <DisconnectButton />
       </div>
     </div>
   );

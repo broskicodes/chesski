@@ -1,10 +1,13 @@
 import { Chess, Move, Square } from "chess.js";
 import { createContext, useContext } from "react";
+import { Player } from "./provider";
 
 export interface ChessboardProviderContext {
   game: Chess;
-  orientation: "white" | "black";
+  turn: Player;
+  orientation: Player;
   onDrop: (sourceSquare: Square, targetSquare: Square) => boolean;
+  onDropVersus: (sourceSquare: Square, targetSquare: Square) => boolean;
   makeMove: (
     move:
       | string
@@ -14,6 +17,8 @@ export interface ChessboardProviderContext {
           promotion?: string | undefined;
         },
   ) => Move | null;
+  playContinuation: (moves: string[]) => boolean;
+  setPosition: (fen: string) => boolean;
   undo: () => Move | null;
   reset: () => void;
   swapOrientation: () => void;
@@ -21,11 +26,21 @@ export interface ChessboardProviderContext {
 
 export const ChessboardContext = createContext<ChessboardProviderContext>({
   game: new Chess(),
-  orientation: "white",
+  turn: Player.White,
+  orientation: Player.White,
   onDrop: (_src, _tgt) => {
     throw new Error("ChessboardProvider not initialized");
   },
+  onDropVersus: (_src, _tgt) => {
+    throw new Error("ChessboardProvider not initialized");
+  },
   makeMove: (_move) => {
+    throw new Error("ChessboardProvider not initialized");
+  },
+  playContinuation: (_moves) => {
+    throw new Error("ChessboardProvider not initialized");
+  },
+  setPosition: (_fen) => {
     throw new Error("ChessboardProvider not initialized");
   },
   undo: () => {

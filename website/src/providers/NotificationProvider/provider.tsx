@@ -19,7 +19,7 @@ export const NotificationProvider = ({ children }: PropsWithChildren) => {
   );
 
   const newAlert = useCallback(
-    (msg: string, type: AlertType): Promise<boolean> => {
+    (msg: string, type: AlertType, title?: string): Promise<boolean> => {
       return new Promise((resolve) => {
         const handleConfirm = () => {
           setAlert(null);
@@ -32,6 +32,7 @@ export const NotificationProvider = ({ children }: PropsWithChildren) => {
         };
 
         setAlert({
+          title,
           msg,
           type,
           onCancel: handleCancel,
