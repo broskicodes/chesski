@@ -21,7 +21,8 @@ export const Moves = ({ transpositions, setNewTempPos }: Props) => {
   const [nextMoves, setNextMoves] = useState<{
     [key: string]: MoveReference;
   }>({});
-  const { chessComUsername } = useSession();
+  // const { chessComUsername } = useSession();
+  const chessComUsername = "0xIffy";
 
   useEffect(() => {
     const moveCtr: { [key: string]: MoveReference } = {};

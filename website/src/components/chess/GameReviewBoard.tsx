@@ -1,9 +1,8 @@
-import { Chess, Move } from "chess.js";
+import { Move } from "chess.js";
 import { useCallback, useEffect, useState } from "react";
 import { Chessboard } from "react-chessboard";
 import { Square } from "react-chessboard/dist/chessboard/types";
 import { useChessboard } from "../../providers/ChessboardProvider";
-import { useSession } from "../../providers/OddSessionProvider";
 import { usePgns } from "../../providers/PgnProvider";
 import { Button } from "../Button";
 
@@ -14,7 +13,6 @@ interface Props {
 
 export const GameReviewBoard = ({ gameIdx, orientation }: Props) => {
   const { undo, game, reset, makeMove } = useChessboard();
-  const { chessComUsername } = useSession();
   const { isLoading } = usePgns();
   const [moveHistory, setMoveHistory] = useState<Move[]>([]);
   const [nextMove, setNextMove] = useState<Move | null>(null);
