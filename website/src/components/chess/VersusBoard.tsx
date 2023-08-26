@@ -23,6 +23,7 @@ export const VersusBoard = () => {
   const [searching, setSearching] = useState(false);
   const [skillLvl, setSkillLvl] = useState(10);
   const [continuation, setContinuation] = useState("");
+  const [size, setSize] = useState(350);
 
   const onMessage = useCallback(
     ({ data }: MessageEvent<string>) => {
@@ -49,7 +50,7 @@ export const VersusBoard = () => {
     stockfish.postMessage(
       `position fen ${game.fen()}${moves.length > 0 ? ` moves ${moves}` : ""}`,
     );
-    stockfish.postMessage("go movetime 3000");
+    stockfish.postMessage("go movetime 1000");
   }, [stockfish, game, stockfishReady]);
 
   const restartStockfish = useCallback(() => {
@@ -114,8 +115,20 @@ export const VersusBoard = () => {
     };
   }, [stockfish, onMessage]);
 
+  useEffect(() => {
+    console.log("k")
+    window.addEventListener('resize', () => {     setSize(window.innerWidth > 600 ? 512 : 350); });
+
+    // Clean up the listener when the component unmounts
+    return () => {
+      window.removeEventListener('resize', () => {     setSize(window.innerWidth > 600 ? 512 : 350); });
+    };
+  }, [window])
+
+  // console.log(window.innerWidth);
+
   return (
-    <div className="flex flex-col items-center justify-center h-full">
+    <div className="flex flex-col items-center justify-center h-full 2xl:bg-green-400 xl:bg-orange-400 lg:bg-yellow-400 md:bg-red-400 sm:bg-blue-400">
       <div className="flex flex-col mb-12 space-y-4 w-full">
         <div className="flex flex-row space-x-2">
           <label htmlFor="lvlSelect" className="font-bold ">
@@ -142,7 +155,7 @@ export const VersusBoard = () => {
           </select>
         </div>
         <div className="flex flex-col space-y-2 items-center w-full">
-          <div className="space-x-2 flex flex-row w-full">
+          <div className="space-x-2 flex flex-col md:flex-row w-full">
             <p className="font-bold">Set position/continuation: </p>
             <input
               type={"text"}
@@ -162,12 +175,14 @@ export const VersusBoard = () => {
           </button>
         </div>
       </div>
+      <div>
       <Chessboard
         position={game.fen()}
         onPieceDrop={onDropVersus}
         boardOrientation={orientation}
-        boardWidth={512}
+        boardWidth={size}
       />
+      </div>
       <div className="flex flex-row w-full space-x-4 mt-6">
         <Button className="grow" onClick={swapOrientation}>
           Flip Board
