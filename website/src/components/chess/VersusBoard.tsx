@@ -128,7 +128,7 @@ export const VersusBoard = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center h-full">
+    <div className="flex flex-col items-center justify-center h-full 2xl:bg-green-400 xl:bg-orange-400 lg:bg-yellow-400 md:bg-red-400 sm:bg-blue-400">
       <div className="flex flex-col mb-12 space-y-4 w-full">
         <div className="flex flex-row space-x-2">
           <label htmlFor="lvlSelect" className="font-bold ">
