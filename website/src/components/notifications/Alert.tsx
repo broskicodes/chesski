@@ -9,7 +9,9 @@ const AlertComp = ({ alert }: Props) => {
   return (
     <div className="flex flex-col justify-center items-center h-full">
       <div
-        className={`bg-white ${alert.title ? "h-64" : "h-48"} w-96 rounded-2xl flex flex-col justify-center items-center relative`}
+        className={`bg-white ${
+          alert.title ? "h-64" : "h-48"
+        } w-96 rounded-2xl flex flex-col justify-center items-center relative`}
       >
         {alert.title ? (
           <div className="w-full text-center absolute top-2">
