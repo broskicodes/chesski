@@ -116,19 +116,19 @@ export const VersusBoard = () => {
   }, [stockfish, onMessage]);
 
   useEffect(() => {
-    console.log("k")
-    window.addEventListener('resize', () => {     setSize(window.innerWidth > 600 ? 512 : 350); });
+    window.addEventListener("resize", () => {
+      setSize(window.innerWidth > 600 ? 512 : 350);
+    });
 
-    // Clean up the listener when the component unmounts
     return () => {
-      window.removeEventListener('resize', () => {     setSize(window.innerWidth > 600 ? 512 : 350); });
+      window.removeEventListener("resize", () => {
+        setSize(window.innerWidth > 600 ? 512 : 350);
+      });
     };
-  }, [window])
-
-  // console.log(window.innerWidth);
+  }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center h-full 2xl:bg-green-400 xl:bg-orange-400 lg:bg-yellow-400 md:bg-red-400 sm:bg-blue-400">
+    <div className="flex flex-col items-center justify-center h-full">
       <div className="flex flex-col mb-12 space-y-4 w-full">
         <div className="flex flex-row space-x-2">
           <label htmlFor="lvlSelect" className="font-bold ">
@@ -176,12 +176,12 @@ export const VersusBoard = () => {
         </div>
       </div>
       <div>
-      <Chessboard
-        position={game.fen()}
-        onPieceDrop={onDropVersus}
-        boardOrientation={orientation}
-        boardWidth={size}
-      />
+        <Chessboard
+          position={game.fen()}
+          onPieceDrop={onDropVersus}
+          boardOrientation={orientation}
+          boardWidth={size}
+        />
       </div>
       <div className="flex flex-row w-full space-x-4 mt-6">
         <Button className="grow" onClick={swapOrientation}>
