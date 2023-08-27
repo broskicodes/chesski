@@ -6,7 +6,7 @@ import { Analytics } from "@vercel/analytics/react";
 
 export const Page = ({ children }: PropsWithChildren) => {
   return (
-    <div className={"container mx-auto h-screen"}>
+    <div className={"container mx-auto"}>
       <title>Chesski</title>
       <Analytics />
       <NotificationProvider>
