@@ -23,7 +23,7 @@ export const VersusBoard = () => {
   const [searching, setSearching] = useState(false);
   const [skillLvl, setSkillLvl] = useState(10);
   const [continuation, setContinuation] = useState("");
-  const [size, setSize] = useState(350);
+  const [size, setSize] = useState(512);
 
   const onMessage = useCallback(
     ({ data }: MessageEvent<string>) => {
@@ -116,6 +116,8 @@ export const VersusBoard = () => {
   }, [stockfish, onMessage]);
 
   useEffect(() => {
+    setSize(window.innerWidth > 600 ? 512 : 350);
+
     window.addEventListener("resize", () => {
       setSize(window.innerWidth > 600 ? 512 : 350);
     });
@@ -128,7 +130,7 @@ export const VersusBoard = () => {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center h-full">
+    <div className="flex flex-col items-center h-full">
       <div className="flex flex-col mb-12 space-y-4 w-full">
         <div className="flex flex-row space-x-2">
           <label htmlFor="lvlSelect" className="font-bold ">

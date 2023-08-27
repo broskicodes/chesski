@@ -10,20 +10,20 @@ export const PlayRenderer = () => {
   const { isConnected } = useSession();
 
   return (
-    <div className="flex flex-col items-center justify-center h-full">
+    <div className="flex flex-col items-center h-full pb-16">
       {isConnected() ? (
         <>
-          <Header />
           <GalleryProvider>
             <PgnProvider>
               <ChessboardProvider>
+                <Header />
                 <VersusBoard />
               </ChessboardProvider>
             </PgnProvider>
           </GalleryProvider>
         </>
       ) : (
-        <div className="flex items-center h-full">
+        <div className="flex items-center h-screen">
           <Connect />
         </div>
       )}
