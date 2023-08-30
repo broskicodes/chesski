@@ -214,6 +214,7 @@ export const VersusBoard = () => {
       default: {
         if (hintLvl > 2) {
           setHighlightedSqrs([]);
+          console.log(sqrPairs);
           setArrows((arrs) => {
             return [...arrs, ...sqrPairs];
           });
