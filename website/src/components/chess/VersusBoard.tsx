@@ -1,8 +1,18 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Chessboard } from "react-chessboard";
-import { useChessboard } from "../../providers/ChessboardProvider";
+import { Player, useChessboard } from "../../providers/ChessboardProvider";
 import { useNotifications } from "../../providers/NotificationProvider";
+import {
+  GameStatus,
+  PV,
+  useStockfish,
+} from "../../providers/StockfishProvider/context";
 import { Button } from "../Button";
+import { DarkSquares } from "../../utils/types";
+import { Square } from "react-chessboard/dist/chessboard/types";
+
+const BOT = "bot";
+const ENGINE = "engine";
 
 export const VersusBoard = () => {
   const {
@@ -17,52 +27,39 @@ export const VersusBoard = () => {
     onDropVersus,
     orientation,
   } = useChessboard();
-  const { addNotification } = useNotifications();
-  const [stockfish, setStockfish] = useState<Worker | null>(null);
-  const [stockfishReady, setStockfishReady] = useState(false);
-  const [searching, setSearching] = useState(false);
+  const { addNotification, newAlert } = useNotifications();
+  const {
+    initEngine,
+    isInit,
+    startSearch,
+    stopSearch,
+    setEngineSkillLvl,
+    restartEngine,
+    getGameStatus,
+    getMoveSuggestions,
+  } = useStockfish();
+
+  const [botSearchFinished, setBotSearchFinished] = useState(false);
+  const [engineSearchFinished, setEngineSearchFinished] = useState(false);
+
   const [skillLvl, setSkillLvl] = useState(10);
   const [continuation, setContinuation] = useState("");
-  const [size, setSize] = useState(512);
+  const [boardSize, setBoardSize] = useState(512);
 
-  const onMessage = useCallback(
-    ({ data }: MessageEvent<string>) => {
-      if (data === "readyok") {
-        setStockfishReady(true);
-      } else if (data.includes("bestmove")) {
-        const move = data.split(" ")[1];
-        makeMove(move);
-        setSearching(false);
-      }
-    },
-    [makeMove],
-  );
+  const [botMove, setBotMove] = useState<string | null>(null);
+  const [suggestedMoves, setSuggestedMoves] = useState<PV[] | null>(null);
+  const [hintLvl, setHintLvl] = useState(0);
+  const [highlightedSqrs, setHighlightedSqrs] = useState<string[]>([]);
+  const [arrows, setArrows] = useState<Square[][]>([]);
 
-  const startEngineSearch = useCallback(() => {
-    if (!stockfish || !stockfishReady) {
-      return;
-    }
-
-    setSearching(true);
-
-    const moves = game.history().join(" ");
-
-    stockfish.postMessage(
-      `position fen ${game.fen()}${moves.length > 0 ? ` moves ${moves}` : ""}`,
-    );
-    stockfish.postMessage("go movetime 1000");
-  }, [stockfish, game, stockfishReady]);
-
-  const restartStockfish = useCallback(() => {
-    if (!stockfish) {
-      return;
-    }
-
-    stockfish.postMessage("uci");
-    stockfish.postMessage(`setoption name Skill Level value ${skillLvl}`);
-    stockfish.postMessage("ucinewgame");
-    stockfish.postMessage("isready");
-  }, [stockfish, skillLvl]);
+  const clearCache = useCallback(() => {
+    setBotSearchFinished(false);
+    setEngineSearchFinished(false);
+    setHighlightedSqrs([]);
+    setHintLvl(0);
+    setArrows([]);
+    setSuggestedMoves(null);
+  }, []);
 
   const addContinuation = useCallback(() => {
     if (!continuation) {
@@ -71,63 +68,187 @@ export const VersusBoard = () => {
     }
 
     if (setPosition(continuation)) {
-      setStockfishReady(false);
+      stopSearch(ENGINE);
+      restartEngine(BOT);
+      restartEngine(ENGINE);
       addNotification({ msg: "Position updated", type: "success" });
       setContinuation("");
+      clearCache();
     } else {
       const moves = continuation.split(" ");
 
       if (playContinuation(moves)) {
-        setStockfishReady(false);
+        stopSearch(ENGINE);
+        restartEngine(BOT);
+        restartEngine(ENGINE);
         addNotification({ msg: "Position updated", type: "success" });
         setContinuation("");
+        clearCache();
       } else {
         addNotification({ msg: "Invalid continuation", type: "error" });
       }
     }
-  }, [continuation, addNotification, setPosition, playContinuation]);
+  }, [
+    continuation,
+    addNotification,
+    setPosition,
+    playContinuation,
+    restartEngine,
+    stopSearch,
+    clearCache,
+  ]);
 
   const levels = useMemo(() => Array.from({ length: 21 }, (_, i) => i), []);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      setStockfish(new Worker("/nmrugg_stockfish_js/stockfish.js"));
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!stockfishReady) restartStockfish();
-  }, [restartStockfish, stockfishReady]);
-
-  useEffect(() => {
-    if (turn !== orientation && !searching) {
-      startEngineSearch();
-    }
-  }, [turn, orientation, searching, startEngineSearch]);
-
-  useEffect(() => {
-    if (!stockfish) {
-      return;
+    if (!isInit(BOT)) {
+      initEngine({
+        engineName: BOT,
+        skillLvl,
+        numPVs: 1,
+        moveTime: 1000,
+      });
     }
 
-    stockfish.onmessage = (event: MessageEvent<string>) => {
-      onMessage(event);
+    if (!isInit(ENGINE)) {
+      initEngine({
+        engineName: ENGINE,
+        skillLvl: 20,
+        numPVs: 3,
+      });
+    }
+  }, [initEngine, isInit, skillLvl]);
+
+  useEffect(() => {
+    if (turn !== orientation && !botSearchFinished) {
+      startSearch(BOT);
+    }
+  }, [turn, orientation, startSearch, botSearchFinished]);
+
+  useEffect(() => {
+    if (turn === orientation && !engineSearchFinished) {
+      startSearch(ENGINE);
+    }
+  }, [turn, orientation, startSearch, engineSearchFinished]);
+
+  useEffect(() => {
+    setBoardSize(window.innerWidth > 600 ? 512 : 350);
+
+    const resizeHandler = () => {
+      setBoardSize(window.innerWidth > 600 ? 512 : 350);
     };
-  }, [stockfish, onMessage]);
 
-  useEffect(() => {
-    setSize(window.innerWidth > 600 ? 512 : 350);
+    const moveHandler = (event: Event) => {
+      const { engineName, move } = (event as CustomEvent).detail;
+      if (engineName === BOT) {
+        console.log("back in main");
+        setBotMove(move);
+        setBotSearchFinished(true);
+      } else if (engineName === ENGINE) {
+        setEngineSearchFinished(true);
+      }
+    };
 
-    window.addEventListener("resize", () => {
-      setSize(window.innerWidth > 600 ? 512 : 350);
-    });
+    const depthHandler = (event: Event) => {
+      const { engineName, pv } = (event as CustomEvent).detail;
+
+      if (engineName === ENGINE) {
+        setSuggestedMoves((pvs) => {
+          return pvs
+            ? [...pvs, pv].sort((var1: PV, var2: PV) => var1.eval - var2.eval)
+            : [pv];
+        });
+      }
+    };
+
+    window.addEventListener("rboardSsize", resizeHandler);
+    window.addEventListener("newBestMove", moveHandler);
+    window.addEventListener("maxDepthReached", depthHandler);
 
     return () => {
-      window.removeEventListener("resize", () => {
-        setSize(window.innerWidth > 600 ? 512 : 350);
-      });
+      window.removeEventListener("resize", resizeHandler);
+      window.removeEventListener("newBestMove", moveHandler);
+      window.removeEventListener("maxDepthReached", depthHandler);
     };
   }, []);
+
+  useEffect(() => {
+    makeMove(botMove ?? "");
+    setBotMove(null);
+  }, [botMove, makeMove]);
+
+  useEffect(() => {
+    let pvs;
+    if (!suggestedMoves) {
+      try {
+        pvs = getMoveSuggestions(ENGINE);
+      } catch {
+        return;
+      }
+    }
+
+    const pvMap = (pv: PV) => {
+      const move = pv.variation[0];
+      return [move.slice(0, 2), move.slice(2, 4)] as Square[];
+    };
+
+    const sqrPairs: Square[][] =
+      suggestedMoves?.map(pvMap) ?? (pvs?.map(pvMap) as Square[][]);
+
+    switch (hintLvl) {
+      case 1: {
+        setHighlightedSqrs((sqrs) => {
+          const fromSqrs = sqrPairs.map((pair) => {
+            return pair[0];
+          });
+          return [...sqrs, ...fromSqrs];
+        });
+        break;
+      }
+      case 2: {
+        setHighlightedSqrs([]);
+        setArrows((arrs) => {
+          return [...arrs, ...sqrPairs];
+        });
+        break;
+      }
+      default: {
+        if (hintLvl > 2) {
+          setHighlightedSqrs([]);
+          setArrows((arrs) => {
+            return [...arrs, ...sqrPairs];
+          });
+        }
+      }
+    }
+  }, [hintLvl, getMoveSuggestions, suggestedMoves]);
+
+  useEffect(() => {
+    if (game.isGameOver()) {
+      if (game.isCheckmate()) {
+        newAlert(
+          `${
+            turn === Player.White ? Player.Black : Player.White
+          } wins by checkmate.`,
+          "default",
+          "Game Over",
+        );
+      } else {
+        let reason: string;
+        if (game.isThreefoldRepetition()) {
+          reason = "repetion";
+        } else if (game.isStalemate()) {
+          reason = "stalemate";
+        } else if (game.isInsufficientMaterial()) {
+          reason = "insufficient material";
+        } else {
+          reason = "50 move rule";
+        }
+
+        newAlert(`Draw by ${reason}`, "default", "Game Over");
+      }
+    }
+  }, [game, turn, newAlert]);
 
   return (
     <div className="flex flex-col items-center h-full">
@@ -141,12 +262,13 @@ export const VersusBoard = () => {
             className="w-16 rounded-md"
             value={skillLvl}
             onChange={({ target }) => {
-              setSkillLvl(Number(target.value));
-              setStockfishReady(false);
-              addNotification({
-                msg: `Chesski level changed to ${target.value}`,
-                type: "success",
-              });
+              if (setEngineSkillLvl(BOT, Number(target.value))) {
+                setSkillLvl(Number(target.value));
+                addNotification({
+                  msg: `Chesski level changed to ${target.value}`,
+                  type: "success",
+                });
+              }
             }}
           >
             {levels.map((i) => (
@@ -180,26 +302,102 @@ export const VersusBoard = () => {
       <div>
         <Chessboard
           position={game.fen()}
-          onPieceDrop={onDropVersus}
+          onPieceDrop={(src, tgt) => {
+            const res = onDropVersus(src, tgt);
+            if (res) {
+              clearCache();
+            }
+
+            return res;
+          }}
+          onSquareClick={() => {
+            setHighlightedSqrs([]);
+          }}
+          onSquareRightClick={(sqr) => {
+            setHighlightedSqrs((sqrs) => {
+              return [...sqrs, sqr];
+            });
+          }}
+          customSquareStyles={(() => {
+            const sqrStyles: { [key: string]: {} } = {};
+            highlightedSqrs.forEach((sqr) => {
+              sqrStyles[sqr] = {
+                backgroundColor: DarkSquares.includes(sqr)
+                  ? "#F37353"
+                  : "#F48367",
+              };
+            });
+            return sqrStyles;
+          })()}
+          customArrows={arrows}
           boardOrientation={orientation}
-          boardWidth={size}
+          boardWidth={boardSize}
         />
       </div>
       <div className="flex flex-row w-full space-x-4 mt-6">
-        <Button className="grow" onClick={swapOrientation}>
+        <Button
+          className="grow"
+          onClick={() => {
+            swapOrientation();
+            clearCache();
+          }}
+        >
           Flip Board
         </Button>
-        <Button className="grow" onClick={undo}>
+        <Button
+          className="grow"
+          onClick={() => {
+            const res = undo();
+            if (res) {
+              clearCache();
+            }
+
+            return res;
+          }}
+        >
           Undo
         </Button>
         <Button
           className="grow"
           onClick={() => {
-            setStockfishReady(false);
+            restartEngine(BOT);
+            restartEngine(ENGINE);
             reset();
+            clearCache();
           }}
         >
           Reset
+        </Button>
+      </div>
+      <div className="mt-4 flex flex-row justify-around w-full space-x-4">
+        <Button
+          className="grow"
+          onClick={() => {
+            try {
+              const [player, status] = getGameStatus(ENGINE);
+              addNotification({
+                msg: `${
+                  status === GameStatus.Equal ? "" : `${player} `
+                }${status}`,
+              });
+            } catch (err) {
+              addNotification({ type: "error", msg: (err as Error).message });
+            }
+          }}
+        >
+          Status
+        </Button>
+        <Button
+          className="grow"
+          onClick={() => {
+            try {
+              setHintLvl(hintLvl + 1);
+            } catch (err) {
+              addNotification({ type: "error", msg: (err as Error).message });
+            }
+          }}
+        >
+          {hintLvl < 1 ? "Hint Level 1" : "Hint Level 2"}
         </Button>
       </div>
     </div>

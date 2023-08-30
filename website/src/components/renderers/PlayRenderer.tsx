@@ -2,6 +2,7 @@ import { ChessboardProvider } from "../../providers/ChessboardProvider";
 import { GalleryProvider } from "../../providers/FileGalleryProvider";
 import { useSession } from "../../providers/OddSessionProvider";
 import { PgnProvider } from "../../providers/PgnProvider";
+import { StockfishProvider } from "../../providers/StockfishProvider";
 import { VersusBoard } from "../chess/VersusBoard";
 import { Connect } from "../connection/Connect";
 import { Header } from "../Header";
@@ -17,7 +18,9 @@ export const PlayRenderer = () => {
             <PgnProvider>
               <ChessboardProvider>
                 <Header />
-                <VersusBoard />
+                <StockfishProvider>
+                  <VersusBoard />
+                </StockfishProvider>
               </ChessboardProvider>
             </PgnProvider>
           </GalleryProvider>
