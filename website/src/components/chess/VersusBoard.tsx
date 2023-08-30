@@ -322,8 +322,8 @@ export const VersusBoard = () => {
             highlightedSqrs.forEach((sqr) => {
               sqrStyles[sqr] = {
                 backgroundColor: DarkSquares.includes(sqr)
-                  ? "#F37353"
-                  : "#F48367",
+                  ? "#F48367"
+                  : "#F7A28D",
               };
             });
             return sqrStyles;

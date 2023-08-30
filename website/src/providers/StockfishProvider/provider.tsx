@@ -207,7 +207,7 @@ export const StockfishProvider = ({ children }: PropsWithChildren) => {
       if (!engine || !engine.isReady || engine.isSearching) {
         return false;
       }
-      
+
       const tempEngines = engines;
       tempEngines[engineName] = {
         ...engine,
