@@ -132,10 +132,10 @@ export const VersusBoard = () => {
   }, [turn, orientation, startSearch, engineSearchFinished]);
 
   useEffect(() => {
-    setBoardSize(window.innerWidth > 600 ? 512 : 350);
+    setBoardSize(window.innerWidth > 600 ? 512 : 368);
 
     const resizeHandler = () => {
-      setBoardSize(window.innerWidth > 600 ? 512 : 350);
+      setBoardSize(window.innerWidth > 600 ? 512 : 368);
     };
 
     const moveHandler = (event: Event) => {
@@ -154,13 +154,15 @@ export const VersusBoard = () => {
       if (engineName === ENGINE) {
         setSuggestedMoves((pvs) => {
           return pvs
-            ? [...pvs, pv].sort((var1: PV, var2: PV) => var1.eval - var2.eval)
+            ? [...pvs, pv].sort(
+                (var1: PV, var2: PV) => -1 * (var1.eval - var2.eval),
+              )
             : [pv];
         });
       }
     };
 
-    window.addEventListener("rboardSsize", resizeHandler);
+    window.addEventListener("resize", resizeHandler);
     window.addEventListener("newBestMove", moveHandler);
     window.addEventListener("maxDepthReached", depthHandler);
 
