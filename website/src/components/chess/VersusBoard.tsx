@@ -141,7 +141,6 @@ export const VersusBoard = () => {
     const moveHandler = (event: Event) => {
       const { engineName, move } = (event as CustomEvent).detail;
       if (engineName === BOT) {
-        console.log("back in main");
         setBotMove(move);
         setBotSearchFinished(true);
       } else if (engineName === ENGINE) {

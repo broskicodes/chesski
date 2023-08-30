@@ -34,10 +34,6 @@ export const StockfishProvider = ({ children }: PropsWithChildren) => {
 
           setEngines({ ...tempEngines });
         } else if (data.includes("bestmove")) {
-          if (engineName === "bot") {
-            console.log("bot move found");
-          }
-
           const move = data.split(" ")[1];
 
           tempEngines[engineName] = {
@@ -113,9 +109,6 @@ export const StockfishProvider = ({ children }: PropsWithChildren) => {
           }
 
           setEngines({ ...tempEngines });
-          // if (engineName === "engine" && depth === MAX_DEPTH) {
-          //   console.log(data);
-          // }
         }
       };
     },
@@ -214,11 +207,7 @@ export const StockfishProvider = ({ children }: PropsWithChildren) => {
       if (!engine || !engine.isReady || engine.isSearching) {
         return false;
       }
-
-      if (engineName == "bot") {
-        console.log("bot turn");
-      }
-
+      
       const tempEngines = engines;
       tempEngines[engineName] = {
         ...engine,
@@ -329,7 +318,6 @@ export const StockfishProvider = ({ children }: PropsWithChildren) => {
       stopSearch,
       restartEngine,
       setEngineSkillLvl,
-      // setEngineReady,
       getGameStatus,
       getMoveSuggestions,
     }),
@@ -340,19 +328,10 @@ export const StockfishProvider = ({ children }: PropsWithChildren) => {
       stopSearch,
       restartEngine,
       setEngineSkillLvl,
-      // setEngineReady,
       getGameStatus,
       getMoveSuggestions,
     ],
   );
-
-  // useEffect(() => {
-  //   Object.values(engines)
-  //     .filter(({ isReady }) => !isReady)
-  //     .forEach(({ name }) => {
-  //       restartEngine(name);
-  //     });
-  // }, [engines, restartEngine]);
 
   return (
     <StockfishContext.Provider value={value}>
