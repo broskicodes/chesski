@@ -7,4 +7,3 @@ export const FlipBoardIcon = ({ height }: IconProps) => {
     </Icon>
   );
 };
-

@@ -143,12 +143,18 @@ export const VersusBoard = () => {
   }, [turn, orientation, startSearch, engineSearchFinished]);
 
   useEffect(() => {
-    setBoardSize(window.innerWidth > 600 && window.innerHeight > 600 ? 512 : 368);
-    setIconSize(window.innerWidth > 600 && window.innerHeight > 600 ? 1.3 : 1);
+    setBoardSize(
+      window.innerWidth > 640 && window.innerHeight > 640 ? 512 : 368,
+    );
+    setIconSize(window.innerWidth > 640 && window.innerHeight > 640 ? 1.3 : 1);
 
     const resizeHandler = () => {
-      setBoardSize(window.innerWidth > 600 && window.innerHeight > 600 ? 512 : 368);
-      setIconSize(window.innerWidth > 600 && window.innerHeight > 600 ? 1.3 : 1);
+      setBoardSize(
+        window.innerWidth > 640 && window.innerHeight > 640 ? 512 : 368,
+      );
+      setIconSize(
+        window.innerWidth > 640 && window.innerHeight > 640 ? 1.3 : 1,
+      );
     };
 
     const moveHandler = (event: Event) => {
@@ -279,7 +285,7 @@ export const VersusBoard = () => {
   }, [game, turn, newAlert]);
 
   return (
-    <div className="flex flex-col items-center h-full justify-center">
+    <div className="flex flex-col items-center h-full mt-12 sm:mt-0 sm:justify-center ">
       <div className="flex flex-col mb-12 space-y-4 w-full">
         <div className="flex flex-row space-x-2">
           <label htmlFor="lvlSelect" className="font-bold ">
@@ -458,7 +464,11 @@ export const VersusBoard = () => {
                 }
               }}
             >
-              {hintLvl < 1 ? <Hint1Icon height={iconSize} /> : <Hint2Icon height={iconSize} />}
+              {hintLvl < 1 ? (
+                <Hint1Icon height={iconSize} />
+              ) : (
+                <Hint2Icon height={iconSize} />
+              )}
             </Button>
           </Tooltip>
         </div>

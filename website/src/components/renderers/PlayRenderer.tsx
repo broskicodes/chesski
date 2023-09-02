@@ -5,10 +5,6 @@ import { PgnProvider } from "../../providers/PgnProvider";
 import { StockfishProvider } from "../../providers/StockfishProvider";
 import { VersusBoard } from "../chess/VersusBoard";
 import { Connect } from "../connection/Connect";
-import { Header } from "../display/Header";
-import { Sidebar, SidebarItem } from "../display/Sidebar";
-import { FlipBoardIcon } from "../icons/FlibBoardIcon";
-import { StatusIcon } from "../icons/StatusIcon";
 
 export const PlayRenderer = () => {
   const { isConnected } = useSession();
@@ -20,8 +16,6 @@ export const PlayRenderer = () => {
           <GalleryProvider>
             <PgnProvider>
               <ChessboardProvider>
-                {/* <Header /> */}
-                <Sidebar />
                 <StockfishProvider>
                   <VersusBoard />
                 </StockfishProvider>

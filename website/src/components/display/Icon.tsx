@@ -1,7 +1,7 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren } from "react";
 
 export interface IconProps {
-  height: number
+  height: number;
 }
 
 export const Icon = ({ height, children }: IconProps & PropsWithChildren) => {
