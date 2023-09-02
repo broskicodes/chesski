@@ -3,7 +3,7 @@ import FileUploadIcon from "../icons/FileUploadIcon";
 
 import { useGallery } from "../../providers/FileGalleryProvider";
 import { fileToUint8Array } from "../../utils/helpers";
-import { Button } from "../Button";
+import { Button } from "../display/Button";
 import { useRef } from "react";
 
 export const FileUploadButton = () => {

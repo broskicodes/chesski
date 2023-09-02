@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { useNotifications } from "../../providers/NotificationProvider";
 import { useSession } from "../../providers/OddSessionProvider";
-import { Button } from "../Button";
+import { Button } from "../display/Button";
 import copy from "clipboard-copy";
 import { QRCodeSVG } from "qrcode.react";
 

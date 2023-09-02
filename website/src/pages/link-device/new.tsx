@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { Page } from "../../components/Page";
+import { Page } from "../../components/display/Page";
 import { NewDeviceRenderer } from "../../components/renderers/NewDeviceRenderer";
 
 const BackupPage: NextPage = () => {

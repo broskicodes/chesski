@@ -1,5 +1,5 @@
 import { useSession } from "../../providers/OddSessionProvider";
-import { Button } from "../Button";
+import { Button } from "../display/Button";
 
 interface ConnectButtonProps {
   username: string;

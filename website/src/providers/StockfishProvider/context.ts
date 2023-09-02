@@ -8,6 +8,22 @@ export enum GameStatus {
   Mate = "has forced mate",
 }
 
+export enum SkillLevel {
+  Beginner = "Beginner",
+  Intermediate = "Intermediate",
+  Experienced = "Experienced",
+  Advanced = "Advanced",
+  Master = "Master",
+}
+
+export const SkillMap: { [key in SkillLevel]: number } = {
+  Beginner: 800,
+  Intermediate: 1350,
+  Experienced: 1800,
+  Advanced: 2400,
+  Master: 2850,
+};
+
 export interface PV {
   eval: number;
   isMate: boolean;
@@ -21,7 +37,7 @@ export interface Stockfish {
   worker: Worker;
   isReady: boolean;
   isSearching: boolean;
-  skillLvl: number;
+  skillLvl: SkillLevel;
   numPVs: number;
   moveTime?: number;
   bestMove: string | null;
@@ -30,7 +46,7 @@ export interface Stockfish {
 
 export interface EngineArgs {
   engineName: string;
-  skillLvl: number;
+  skillLvl: SkillLevel;
   numPVs: number;
   moveTime?: number;
 }
@@ -41,7 +57,7 @@ export interface StockfishProviderContext {
   startSearch: (engineName: string) => boolean;
   stopSearch: (engineName: string) => boolean;
   restartEngine: (engineName: string) => boolean;
-  setEngineSkillLvl: (engineName: string, lvl: number) => boolean;
+  setEngineSkillLvl: (engineName: string, lvl: SkillLevel) => boolean;
   getGameStatus: (engineName: string) => [Player, GameStatus];
   getMoveSuggestions: (engineName: string) => PV[];
 }

@@ -7,7 +7,7 @@ import { PgnProvider } from "../../providers/PgnProvider";
 import { useSession } from "../../providers/OddSessionProvider";
 import { Connect } from "../connection/Connect";
 import { ChessboardProvider } from "../../providers/ChessboardProvider";
-import { Header } from "../Header";
+import { Header } from "../display/Header";
 import { useEffect } from "react";
 import { useNotifications } from "../../providers/NotificationProvider";
 import { useRouter } from "next/router";

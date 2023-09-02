@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Button } from "./Button";
-import { Connect } from "./connection/Connect";
-import { DisconnectButton } from "./connection/DisconnectButton";
+import { Connect } from "../connection/Connect";
+import { DisconnectButton } from "../connection/DisconnectButton";
 
 export const Header = () => {
   const router = useRouter();
