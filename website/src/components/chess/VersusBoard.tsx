@@ -55,6 +55,7 @@ export const VersusBoard = () => {
   const [skillLvl, setSkillLvl] = useState<SkillLevel>(SkillLevel.Intermediate);
   const [continuation, setContinuation] = useState("");
   const [boardSize, setBoardSize] = useState(512);
+  const [iconSize, setIconSize] = useState(1.3);
 
   const [botMove, setBotMove] = useState<string | null>(null);
   const [suggestedMoves, setSuggestedMoves] = useState<PV[] | null>(null);
@@ -142,10 +143,12 @@ export const VersusBoard = () => {
   }, [turn, orientation, startSearch, engineSearchFinished]);
 
   useEffect(() => {
-    setBoardSize(window.innerWidth > 600 ? 512 : 368);
+    setBoardSize(window.innerWidth > 600 && window.innerHeight > 600 ? 512 : 368);
+    setIconSize(window.innerWidth > 600 && window.innerHeight > 600 ? 1.3 : 1);
 
     const resizeHandler = () => {
-      setBoardSize(window.innerWidth > 600 ? 512 : 368);
+      setBoardSize(window.innerWidth > 600 && window.innerHeight > 600 ? 512 : 368);
+      setIconSize(window.innerWidth > 600 && window.innerHeight > 600 ? 1.3 : 1);
     };
 
     const moveHandler = (event: Event) => {
@@ -276,7 +279,7 @@ export const VersusBoard = () => {
   }, [game, turn, newAlert]);
 
   return (
-    <div className="flex flex-col items-center h-full">
+    <div className="flex flex-col items-center h-full justify-center">
       <div className="flex flex-col mb-12 space-y-4 w-full">
         <div className="flex flex-row space-x-2">
           <label htmlFor="lvlSelect" className="font-bold ">
@@ -386,7 +389,7 @@ export const VersusBoard = () => {
                 clearCache();
               }}
             >
-              <FlipBoardIcon />
+              <FlipBoardIcon height={iconSize} />
             </Button>
           </Tooltip>
           <Tooltip content={"Undo Move"}>
@@ -401,7 +404,7 @@ export const VersusBoard = () => {
                 return res;
               }}
             >
-              <UndoArrowIcon />
+              <UndoArrowIcon height={iconSize} />
             </Button>
           </Tooltip>
           <Tooltip content={"Reset Game"}>
@@ -414,7 +417,7 @@ export const VersusBoard = () => {
                 clearCache();
               }}
             >
-              <ResetIcon />
+              <ResetIcon height={iconSize} />
             </Button>
           </Tooltip>
         </div>
@@ -438,7 +441,7 @@ export const VersusBoard = () => {
                 }
               }}
             >
-              <StatusIcon />
+              <StatusIcon height={iconSize} />
             </Button>
           </Tooltip>
           <Tooltip content={`Hint ${hintLvl < 1 ? 1 : 2}`}>
@@ -455,12 +458,12 @@ export const VersusBoard = () => {
                 }
               }}
             >
-              {hintLvl < 1 ? <Hint1Icon /> : <Hint2Icon />}
+              {hintLvl < 1 ? <Hint1Icon height={iconSize} /> : <Hint2Icon height={iconSize} />}
             </Button>
           </Tooltip>
         </div>
         {/* <Tooltip content={"Export Game"}>
-        <Button onClick={() => {}}><ExportIcon /></Button>
+        <Button onClick={() => {}}><ExportIcon height={iconSize} /></Button>
       </Tooltip> */}
       </div>
     </div>
