@@ -5,7 +5,7 @@ import { PgnProvider } from "../../providers/PgnProvider";
 import { StockfishProvider } from "../../providers/StockfishProvider";
 import { VersusBoard } from "../chess/VersusBoard";
 import { Connect } from "../connection/Connect";
-import { Header } from "../Header";
+import { Header } from "../display/Header";
 
 export const PlayRenderer = () => {
   const { isConnected } = useSession();

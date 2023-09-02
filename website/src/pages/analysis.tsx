@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import { Page } from "../components/Page";
+import { Page } from "../components/display/Page";
 import { AnalysisRenderer } from "../components/renderers/AnalysisRenderer";
 
 const AnaylisPage: NextPage = () => {

@@ -3,7 +3,7 @@ import { usePgns } from "../../providers/PgnProvider";
 import { Moves } from "./Moves";
 import { Chess } from "chess.js";
 import { useChessboard } from "../../providers/ChessboardProvider";
-import { Button } from "../Button";
+import { Button } from "../display/Button";
 import { Chessboard } from "react-chessboard";
 
 export const DiscoveryBoard = () => {

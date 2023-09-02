@@ -2,6 +2,8 @@ import {
   EngineArgs,
   GameStatus,
   PV,
+  SkillLevel,
+  SkillMap,
   Stockfish,
   StockfishContext,
   StockfishProviderContext,
@@ -18,6 +20,7 @@ export const StockfishProvider = ({ children }: PropsWithChildren) => {
   const getOnMessage = useCallback(
     (engineName: string) => {
       return ({ data }: MessageEvent<string>) => {
+        // console.log(data);
         const engine = engines[engineName];
 
         if (!engine) {
@@ -145,12 +148,15 @@ export const StockfishProvider = ({ children }: PropsWithChildren) => {
         onMessage(event);
       };
 
-      engine.worker.postMessage("uci");
-      engine.worker.postMessage(
-        `setoption name Skill Level value ${engine.skillLvl}`,
-      );
+      engine.worker.postMessage(`setoption name Skill Level value ${20}`);
       engine.worker.postMessage(
         `setoption name MultiPV value ${engine.numPVs}`,
+      );
+      engine.worker.postMessage(
+        `setoption name UCI_LimitStrength value ${true}`,
+      );
+      engine.worker.postMessage(
+        `setoption name UCI_ELO value ${SkillMap[engine.skillLvl]}`,
       );
       engine.worker.postMessage("ucinewgame");
       engine.worker.postMessage("isready");
@@ -191,6 +197,7 @@ export const StockfishProvider = ({ children }: PropsWithChildren) => {
 
         setEngines({ ...tempEngines });
 
+        engine.worker.postMessage("uci");
         return restartEngine(engineName);
       } catch (e) {
         console.error(e);
@@ -263,7 +270,7 @@ export const StockfishProvider = ({ children }: PropsWithChildren) => {
   );
 
   const setEngineSkillLvl = useCallback(
-    (engineName: string, skillLvl: number) => {
+    (engineName: string, skillLvl: SkillLevel) => {
       const engine = engines[engineName];
 
       if (!engine) {

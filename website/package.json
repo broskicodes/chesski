@@ -22,7 +22,8 @@
     "react-chessboard": "^4.1.0",
     "react-dom": "18.2.0",
     "react-spring": "^9.7.2",
-    "stockfish": "15.0.0"
+    "stockfish": "15.0.0",
+    "tippy.js": "^6.3.7"
   },
   "devDependencies": {
     "@types/node": "20.5.7",

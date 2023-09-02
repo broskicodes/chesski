@@ -4,7 +4,7 @@ import { Chessboard } from "react-chessboard";
 import { Square } from "react-chessboard/dist/chessboard/types";
 import { useChessboard } from "../../providers/ChessboardProvider";
 import { usePgns } from "../../providers/PgnProvider";
-import { Button } from "../Button";
+import { Button } from "../display/Button";
 
 interface Props {
   gameIdx: string;

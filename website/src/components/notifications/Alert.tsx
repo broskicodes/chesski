@@ -1,5 +1,5 @@
 import { Alert } from "../../providers/NotificationProvider";
-import { Button } from "../Button";
+import { Button } from "../display/Button";
 
 interface Props {
   alert: Alert;

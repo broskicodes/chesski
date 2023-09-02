@@ -5,11 +5,21 @@ import { useNotifications } from "../../providers/NotificationProvider";
 import {
   GameStatus,
   PV,
+  SkillLevel,
   useStockfish,
 } from "../../providers/StockfishProvider/context";
-import { Button } from "../Button";
+import { Button } from "../display/Button";
 import { DarkSquares } from "../../utils/types";
 import { Square } from "react-chessboard/dist/chessboard/types";
+import { Move } from "chess.js";
+import { FlipBoardIcon } from "../icons/FlibBoardIcon";
+import { UndoArrowIcon } from "../icons/UndoArrowIcon";
+import { ResetIcon } from "../icons/ResetIcon";
+import { Hint1Icon } from "../icons/Hint1Icon";
+import { Hint2Icon } from "../icons/Hint2Icon";
+import { ExportIcon } from "../icons/ExportIcon";
+import { Tooltip } from "../display/Tooltip";
+import { StatusIcon } from "../icons/StatusIcon";
 
 const BOT = "bot";
 const ENGINE = "engine";
@@ -42,7 +52,7 @@ export const VersusBoard = () => {
   const [botSearchFinished, setBotSearchFinished] = useState(false);
   const [engineSearchFinished, setEngineSearchFinished] = useState(false);
 
-  const [skillLvl, setSkillLvl] = useState(10);
+  const [skillLvl, setSkillLvl] = useState<SkillLevel>(SkillLevel.Intermediate);
   const [continuation, setContinuation] = useState("");
   const [boardSize, setBoardSize] = useState(512);
 
@@ -50,6 +60,7 @@ export const VersusBoard = () => {
   const [suggestedMoves, setSuggestedMoves] = useState<PV[] | null>(null);
   const [hintLvl, setHintLvl] = useState(0);
   const [highlightedSqrs, setHighlightedSqrs] = useState<string[]>([]);
+  const [highlightedMoves, setHighlightedMoves] = useState<Move[]>([]);
   const [arrows, setArrows] = useState<Square[][]>([]);
 
   const clearCache = useCallback(() => {
@@ -59,6 +70,7 @@ export const VersusBoard = () => {
     setHintLvl(0);
     setArrows([]);
     setSuggestedMoves(null);
+    setHighlightedMoves([]);
   }, []);
 
   const addContinuation = useCallback(() => {
@@ -98,8 +110,6 @@ export const VersusBoard = () => {
     clearCache,
   ]);
 
-  const levels = useMemo(() => Array.from({ length: 21 }, (_, i) => i), []);
-
   useEffect(() => {
     if (!isInit(BOT)) {
       initEngine({
@@ -113,7 +123,7 @@ export const VersusBoard = () => {
     if (!isInit(ENGINE)) {
       initEngine({
         engineName: ENGINE,
-        skillLvl: 20,
+        skillLvl: SkillLevel.Master,
         numPVs: 3,
       });
     }
@@ -172,6 +182,19 @@ export const VersusBoard = () => {
       window.removeEventListener("maxDepthReached", depthHandler);
     };
   }, []);
+
+  useEffect(() => {
+    const keyboardHandler = (event: Event) => {
+      if ((event as KeyboardEvent).key === "ArrowLeft" && undo()) {
+        clearCache();
+      }
+    };
+    window.addEventListener("keydown", keyboardHandler);
+
+    return () => {
+      window.removeEventListener("keydown", keyboardHandler);
+    };
+  }, [undo, clearCache]);
 
   useEffect(() => {
     makeMove(botMove ?? "");
@@ -261,11 +284,11 @@ export const VersusBoard = () => {
           </label>
           <select
             id="lvlSlelect"
-            className="w-16 rounded-md"
+            className="w-32 rounded-md"
             value={skillLvl}
             onChange={({ target }) => {
-              if (setEngineSkillLvl(BOT, Number(target.value))) {
-                setSkillLvl(Number(target.value));
+              if (setEngineSkillLvl(BOT, target.value as SkillLevel)) {
+                setSkillLvl(target.value as SkillLevel);
                 addNotification({
                   msg: `Chesski level changed to ${target.value}`,
                   type: "success",
@@ -273,7 +296,7 @@ export const VersusBoard = () => {
               }
             }}
           >
-            {levels.map((i) => (
+            {Object.values(SkillLevel).map((i) => (
               <option key={i} value={i}>
                 {i}
               </option>
@@ -312,7 +335,15 @@ export const VersusBoard = () => {
 
             return res;
           }}
-          onSquareClick={() => {
+          onSquareClick={(sqr) => {
+            if (highlightedMoves.length > 0) {
+              if (makeMove({ from: highlightedMoves[0].from, to: sqr })) {
+                clearCache();
+                return;
+              }
+            }
+
+            setHighlightedMoves(game.moves({ square: sqr, verbose: true }));
             setHighlightedSqrs([]);
           }}
           onSquareRightClick={(sqr) => {
@@ -324,9 +355,18 @@ export const VersusBoard = () => {
             const sqrStyles: { [key: string]: {} } = {};
             highlightedSqrs.forEach((sqr) => {
               sqrStyles[sqr] = {
-                backgroundColor: DarkSquares.includes(sqr)
-                  ? "#F48367"
-                  : "#F7A28D",
+                background: DarkSquares.includes(sqr) ? "#F48367" : "#F7A28D",
+              };
+            });
+            highlightedMoves.forEach((sqr) => {
+              sqrStyles[sqr.from] = {
+                ...sqrStyles[sqr.from],
+                background: "#E6FF99",
+              };
+              sqrStyles[sqr.to] = {
+                ...sqrStyles[sqr.to],
+                background:
+                  "radial-gradient(circle, rgba(0,0,0,.1) 25%, transparent 10%)",
               };
             });
             return sqrStyles;
@@ -336,71 +376,92 @@ export const VersusBoard = () => {
           boardWidth={boardSize}
         />
       </div>
-      <div className="flex flex-row w-full space-x-4 mt-6">
-        <Button
-          className="grow"
-          onClick={() => {
-            swapOrientation();
-            clearCache();
-          }}
-        >
-          Flip Board
-        </Button>
-        <Button
-          className="grow"
-          onClick={() => {
-            const res = undo();
-            if (res) {
-              clearCache();
-            }
+      <div className="flex flex-row w-full mt-4 justify-between">
+        <div className="flex flex-row space-x-3">
+          <Tooltip content={"Flip Board"}>
+            <Button
+              className="grow"
+              onClick={() => {
+                swapOrientation();
+                clearCache();
+              }}
+            >
+              <FlipBoardIcon />
+            </Button>
+          </Tooltip>
+          <Tooltip content={"Undo Move"}>
+            <Button
+              className="grow"
+              onClick={() => {
+                const res = undo();
+                if (res) {
+                  clearCache();
+                }
 
-            return res;
-          }}
-        >
-          Undo
-        </Button>
-        <Button
-          className="grow"
-          onClick={() => {
-            restartEngine(BOT);
-            restartEngine(ENGINE);
-            reset();
-            clearCache();
-          }}
-        >
-          Reset
-        </Button>
-      </div>
-      <div className="mt-4 flex flex-row justify-around w-full space-x-4">
-        <Button
-          className="grow"
-          onClick={() => {
-            try {
-              const [player, status] = getGameStatus(ENGINE);
-              addNotification({
-                msg: `${
-                  status === GameStatus.Equal ? "" : `${player} `
-                }${status}`,
-              });
-            } catch (err) {
-              addNotification({ type: "error", msg: (err as Error).message });
-            }
-          }}
-        >
-          Status
-        </Button>
-        <Button
-          className="grow"
-          onClick={() => {
-            try {
-              setHintLvl(hintLvl + 1);
-            } catch (err) {
-              addNotification({ type: "error", msg: (err as Error).message });
-            }
-          }}
-        >
-          {hintLvl < 1 ? "Hint Level 1" : "Hint Level 2"}
-        </Button>
+                return res;
+              }}
+            >
+              <UndoArrowIcon />
+            </Button>
+          </Tooltip>
+          <Tooltip content={"Reset Game"}>
+            <Button
+              className="grow"
+              onClick={() => {
+                restartEngine(BOT);
+                restartEngine(ENGINE);
+                reset();
+                clearCache();
+              }}
+            >
+              <ResetIcon />
+            </Button>
+          </Tooltip>
+        </div>
+        <div className="flex flex-row space-x-3">
+          <Tooltip content={"Status"}>
+            <Button
+              className="grow"
+              onClick={() => {
+                try {
+                  const [player, status] = getGameStatus(ENGINE);
+                  addNotification({
+                    msg: `${
+                      status === GameStatus.Equal ? "" : `${player} `
+                    }${status}`,
+                  });
+                } catch (err) {
+                  addNotification({
+                    type: "error",
+                    msg: (err as Error).message,
+                  });
+                }
+              }}
+            >
+              <StatusIcon />
+            </Button>
+          </Tooltip>
+          <Tooltip content={`Hint ${hintLvl < 1 ? 1 : 2}`}>
+            <Button
+              className="grow"
+              onClick={() => {
+                try {
+                  setHintLvl(hintLvl + 1);
+                } catch (err) {
+                  addNotification({
+                    type: "error",
+                    msg: (err as Error).message,
+                  });
+                }
+              }}
+            >
+              {hintLvl < 1 ? <Hint1Icon /> : <Hint2Icon />}
+            </Button>
+          </Tooltip>
+        </div>
+        {/* <Tooltip content={"Export Game"}>
+        <Button onClick={() => {}}><ExportIcon /></Button>
+      </Tooltip> */}
       </div>
     </div>
   );
