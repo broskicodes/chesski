@@ -1,6 +1,5 @@
 import { path } from "@oddjs/odd";
 import { Chess } from "chess.js";
-import { parse, ParsedPGN } from "pgn-parser";
 import {
   PropsWithChildren,
   useCallback,
@@ -8,7 +7,6 @@ import {
   useMemo,
   useState,
 } from "react";
-import { parsedPgnToChessJs } from "../../utils/helpers";
 import { useGallery } from "../FileGalleryProvider";
 import { PgnContext, PgnProviderContext } from "./context";
 

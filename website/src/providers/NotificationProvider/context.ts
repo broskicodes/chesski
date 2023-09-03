@@ -1,4 +1,3 @@
-import type { FileSystem } from "@oddjs/odd";
 import { createContext, useContext } from "react";
 
 export type NotificationType = "success" | "error" | "info" | "warning";

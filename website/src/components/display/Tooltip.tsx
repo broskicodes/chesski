@@ -1,4 +1,4 @@
-import React, { JSX, ReactNode, useState, useRef, useEffect } from "react";
+import React, { JSX, useState, useRef, useEffect } from "react";
 import tippy, { Instance } from "tippy.js";
 import "tippy.js/dist/tippy.css";
 

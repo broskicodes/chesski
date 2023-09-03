@@ -1,6 +1,3 @@
-// import { handleFileInput } from "../../../../routes/video-library/lib/gallery";
-import FileUploadIcon from "../icons/FileUploadIcon";
-
 import { useGallery } from "../../providers/FileGalleryProvider";
 import { fileToUint8Array } from "../../utils/helpers";
 import { Button } from "../display/Button";
@@ -25,7 +22,6 @@ export const FileUploadButton = () => {
               }
             }}
           >
-            {/* <FileUploadIcon /> */}
             <p className="text-sm">
               <span className="font-bold text-sm">Click to upload PGN</span>
             </p>

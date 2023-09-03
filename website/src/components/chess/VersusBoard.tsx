@@ -17,7 +17,6 @@ import { UndoArrowIcon } from "../icons/UndoArrowIcon";
 import { ResetIcon } from "../icons/ResetIcon";
 import { Hint1Icon } from "../icons/Hint1Icon";
 import { Hint2Icon } from "../icons/Hint2Icon";
-import { ExportIcon } from "../icons/ExportIcon";
 import { Tooltip } from "../display/Tooltip";
 import { StatusIcon } from "../icons/StatusIcon";
 import { useSidebar } from "../../providers/SidebarProvider";

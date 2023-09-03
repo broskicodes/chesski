@@ -1,9 +1,6 @@
 import {
   PropsWithChildren,
   ReactNode,
-  useState,
-  createContext,
-  useContext,
 } from "react";
 import { useRouter } from "next/router";
 import { ProfileIcon } from "../icons/ProfileIcon";
