@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { Sidebar } from "./Sidebar";
 import { useEffect, useState } from "react";
 import { BottomNav } from "./BottonNav";
+import { SidebarProvider } from "../../providers/SidebarProvider";
 
 export const Page = ({ children }: PropsWithChildren) => {
   const [screenWidth, setScreenWidth] = useState(0);
@@ -25,14 +26,16 @@ export const Page = ({ children }: PropsWithChildren) => {
   }, []);
 
   return (
-    <div className={"container mx-auto"}>
+    <div className={""}>
       <title>Chesski</title>
       <Analytics />
       <NotificationProvider>
         <SessionProvider>
           <Notifications />
-          {screenWidth > 600 ? <Sidebar /> : <BottomNav />}
-          {children}
+          <SidebarProvider>
+            {screenWidth >= 640 ? <Sidebar /> : <BottomNav />}
+            {children}
+          </SidebarProvider>
         </SessionProvider>
       </NotificationProvider>
     </div>

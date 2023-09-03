@@ -1,7 +1,6 @@
 const CheckThinIcon = ({ color }: { color: string }) => (
   <svg
-    width="28px"
-    height="28px"
+    height="2em"
     viewBox="0 0 28 28"
     version="1.1"
     xmlns="http://www.w3.org/2000/svg"

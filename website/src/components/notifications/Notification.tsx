@@ -50,15 +50,14 @@ const NotificationComp = ({ notification }: Props) => {
       aria-atomic="true"
     >
       <div
-        className={`alert alert-${notification.type} text-sm mb-3 peer-last:mb-0`}
+        className={`alert alert-${notification.type} text-sm mb-3 peer-last:mb-0 bg-white`}
       >
-        <div>
+        <div className="flex flex-row border rounded-lg py-2 px-3 items-center space-x-2 shadow-md">
           <IconComponent {...iconMap[notification.type].props} />
-          <span className="pl-1">{notification.msg}</span>
+          <span className="font-medium">{notification.msg}</span>
         </div>
       </div>
     </div>
-    // <p>piss</p>
   );
 };
 

@@ -12,17 +12,16 @@ import { DisconnectIcon } from "../icons/DisconnectIcon";
 import { DeviceLinkIcon } from "../icons/DeivceLinkIcons";
 import { PlayChessIcon } from "../icons/PlayChessIcon";
 import { MenuIcon } from "../icons/MenuIcon";
-
-const SidebarContext = createContext({ expanded: true });
+import { useSidebar } from "../../providers/SidebarProvider";
 
 export const Sidebar = ({ children }: PropsWithChildren) => {
   const { isConnected, username, disconnect } = useSession();
-  const [expanded, setExpanded] = useState(false);
+  const { expanded, toggleExpanded } = useSidebar();
   const router = useRouter();
 
   return (
     <aside
-      className="h-screen absolute left-0 top-0 z-40"
+      className={`h-screen fixed left-0 top-0 z-40`}
       hidden={!isConnected()}
     >
       <nav className="h-full flex flex-col bg-white shadow-md border-r">
@@ -35,41 +34,39 @@ export const Sidebar = ({ children }: PropsWithChildren) => {
             Chesski
           </div>
           <button
-            onClick={() => setExpanded((curr) => !curr)}
+            onClick={toggleExpanded}
             className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100"
           >
             <MenuIcon height={1.5} />
           </button>
         </div>
-        <SidebarContext.Provider value={{ expanded }}>
-          <ul className="flex-1 px-3">
-            <SidebarItem
-              icon={PlayChessIcon({ height: 1.5 })}
-              text={"Play Chesski"}
-              active={router.route === "/"}
-              handleClick={() => {
-                router.route === "/" ? {} : router.push("/");
-              }}
-            />
-            {children}
-            {isConnected() && (
-              <div className={`absolute bottom-16`}>
-                <SidebarItem
-                  icon={DeviceLinkIcon({ height: 1.5 })}
-                  text={"Link Device"}
-                  handleClick={() => {
-                    router.push("/link-device/authed");
-                  }}
-                />
-                <SidebarItem
-                  icon={DisconnectIcon({ height: 1.5 })}
-                  text={"Disconnect"}
-                  handleClick={disconnect}
-                />
-              </div>
-            )}
-          </ul>
-        </SidebarContext.Provider>
+        <ul className="flex-1 px-3">
+          <SidebarItem
+            icon={PlayChessIcon({ height: 1.5 })}
+            text={"Play Chesski"}
+            active={router.route === "/"}
+            handleClick={() => {
+              router.route === "/" ? {} : router.push("/");
+            }}
+          />
+          {children}
+          {isConnected() && (
+            <div className={`absolute bottom-16`}>
+              <SidebarItem
+                icon={DeviceLinkIcon({ height: 1.5 })}
+                text={"Link Device"}
+                handleClick={() => {
+                  router.push("/link-device/authed");
+                }}
+              />
+              <SidebarItem
+                icon={DisconnectIcon({ height: 1.5 })}
+                text={"Disconnect"}
+                handleClick={disconnect}
+              />
+            </div>
+          )}
+        </ul>
         {isConnected() && (
           <div className="border-t flex p-3">
             <div className="py-1 px-3 my-1">
@@ -109,7 +106,7 @@ export const SidebarItem = ({
   active,
   alert,
 }: ItemProps) => {
-  const { expanded } = useContext(SidebarContext);
+  const { expanded } = useSidebar();
   return (
     <li
       onClick={handleClick}
