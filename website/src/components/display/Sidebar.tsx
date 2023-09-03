@@ -27,7 +27,7 @@ export const Sidebar = ({ children }: PropsWithChildren) => {
       <nav className="h-full flex flex-col bg-white shadow-md border-r">
         <div className="p-4 pb-2 flex justify-between items-center">
           <div
-            className={`overflow-hidden transition-all ${
+            className={`overflow-hidden transition-all font-bold text-xl ${
               expanded ? "w-32" : "w-0"
             }`}
           >
