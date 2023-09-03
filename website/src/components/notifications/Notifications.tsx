@@ -9,7 +9,7 @@ export const Notifications = () => {
   return (
     <div>
       {notifications.length ? (
-        <div className="fixed z-max right-4 bottom-8 flex flex-col justify-center">
+        <div className="fixed z-50 right-6 bottom-6 flex flex-col justify-center">
           <Transition
             items={notifications}
             from={{ opacity: 0 }}

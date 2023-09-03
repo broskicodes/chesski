@@ -1,10 +1,8 @@
 import { DragEvent, ReactNode, useState } from "react";
 
-// import { addNotification } from "../../../../lib/notifications";
 import { useGallery } from "../../providers/FileGalleryProvider";
 import { useNotifications } from "../../providers/NotificationProvider";
 import { fileToUint8Array } from "../../utils/helpers";
-// import { getFilesFromWNFS, uploadFileToWNFS } from "../../../../routes/video-library/lib/gallery";
 
 /**
  * This is needed to prevent the default behaviour of the file opening in browser

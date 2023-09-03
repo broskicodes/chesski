@@ -5,19 +5,17 @@ import { PgnProvider } from "../../providers/PgnProvider";
 import { StockfishProvider } from "../../providers/StockfishProvider";
 import { VersusBoard } from "../chess/VersusBoard";
 import { Connect } from "../connection/Connect";
-import { Header } from "../display/Header";
 
 export const PlayRenderer = () => {
   const { isConnected } = useSession();
 
   return (
-    <div className="flex flex-col items-center h-full pb-16">
+    <div className="flex flex-col h-screen">
       {isConnected() ? (
         <>
           <GalleryProvider>
             <PgnProvider>
               <ChessboardProvider>
-                <Header />
                 <StockfishProvider>
                   <VersusBoard />
                 </StockfishProvider>
@@ -26,7 +24,7 @@ export const PlayRenderer = () => {
           </GalleryProvider>
         </>
       ) : (
-        <div className="flex items-center h-screen">
+        <div className="flex items-center h-screen justify-center">
           <Connect />
         </div>
       )}

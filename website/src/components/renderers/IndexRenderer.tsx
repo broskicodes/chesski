@@ -1,4 +1,3 @@
-import { DisconnectButton } from "../connection/DisconnectButton";
 import { DiscoveryBoard } from "../chess/DiscoveryBoard";
 import Dropzone from "../upload/Dropzone";
 import { FileUploadButton } from "../upload/FileUploadButton";
