@@ -54,7 +54,7 @@ const NotificationComp = ({ notification }: Props) => {
       >
         <div className="flex flex-row border rounded-lg py-2 px-3 items-center space-x-2 shadow-md">
           <IconComponent {...iconMap[notification.type].props} />
-          <span className="font-medium">{notification.msg}</span>
+          <span className="font-medium text-lg">{notification.msg}</span>
         </div>
       </div>
     </div>

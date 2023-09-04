@@ -383,7 +383,10 @@ export const VersusBoard = () => {
                 sqrStyles[sqr.to] = {
                   ...sqrStyles[sqr.to],
                   background:
-                    "radial-gradient(circle, rgba(0,0,0,.1) 25%, transparent 10%)",
+                    game.get(sqr.to) &&
+                    game.get(sqr.from).color !== game.get(sqr.to).color
+                      ? "radial-gradient(circle, rgba(0,0,0,.1) 75%, transparent 10%)"
+                      : "radial-gradient(circle, rgba(0,0,0,.1) 25%, transparent 10%)",
                 };
               });
               return sqrStyles;
