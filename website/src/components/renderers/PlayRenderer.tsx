@@ -25,7 +25,11 @@ export const PlayRenderer = () => {
         </>
       ) : (
         <div className="flex items-center h-screen justify-center">
-          <LandingPage header="Elevate your game" subText="Put your overall chess skill to the test. Train against Chesski in full games" link="/play" />
+          <LandingPage
+            header="Elevate your game"
+            subText="Put your overall chess skill to the test. Train against Chesski in full games"
+            link="/play"
+          />
         </div>
       )}
     </div>

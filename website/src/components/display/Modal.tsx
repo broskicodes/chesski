@@ -10,9 +10,7 @@ export const Modal = ({ title, children }: ModalProps) => {
   return (
     <div className="flex flex-col justify-center items-center h-full fixed z-50 inset-0">
       <div
-        className={`bg-white ${
-         "h-64"
-        } w-96 rounded-2xl flex flex-col justify-center items-center relative`}
+        className={`bg-white h-64 w-96 rounded-2xl flex flex-col justify-center items-center relative`}
       >
         <div className="w-full text-center absolute top-2">
           <p className="text-2xl font-bold">{title}</p>
@@ -28,7 +26,6 @@ export const Modal = ({ title, children }: ModalProps) => {
   );
 };
 
-
 interface CMProps {
   handleSuccess: () => void;
 }
@@ -40,32 +37,29 @@ export const ConnectModal = ({ handleSuccess }: CMProps) => {
   return (
     <Modal title="Create Account">
       <label>
-        Username: 
-      <input
-        className="border"
-        value={username}
-        onChange={({ target }) => {
-          setUsername(target.value);
-        }}
-      />
+        Username:
+        <input
+          className="border"
+          value={username}
+          onChange={({ target }) => {
+            setUsername(target.value);
+          }}
+        />
       </label>
       <div className="flex flex-row w-full justify-around">
-      <Button
-        disabled={loading}
-        onClick={async () => {
-          await connect(username);
-          handleSuccess();
-        }}
-      >
-      Confirm
-    </Button>
-    <Button
-        disabled={loading}
-        onClick={handleSuccess}
-      >
-      Cancel
-    </Button>
-    </div>
-  </Modal>
-  )
-}
+        <Button
+          disabled={loading}
+          onClick={async () => {
+            await connect(username);
+            handleSuccess();
+          }}
+        >
+          Confirm
+        </Button>
+        <Button disabled={loading} onClick={handleSuccess}>
+          Cancel
+        </Button>
+      </div>
+    </Modal>
+  );
+};

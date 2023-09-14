@@ -15,7 +15,7 @@ export const OpenningsRenderer = () => {
   return (
     <div className="flex flex-col h-screen">
       {isConnected() ? (
-        <>
+        <div>
           <GalleryProvider>
             <PgnProvider>
               <ChessboardProvider>
@@ -32,14 +32,18 @@ export const OpenningsRenderer = () => {
               </ChessboardProvider>
             </PgnProvider>
           </GalleryProvider>
-        </>
+        </div>
       ) : (
         <div
           className={`flex flex-col h-full mt-8 sm:mt-0 sm:justify-center ${
             expanded ? "md:ml-72" : "md:ml-20"
           } items-center`}
         >
-          <LandingPage header="Strengthen your repetoir" subText="Practice in any openning position, study specific lines and learn key insigths with the help of Chesski" link="/opennings" />
+          <LandingPage
+            header="Strengthen your repetoir"
+            subText="Practice in any openning position, study specific lines and learn key insigths with the help of Chesski"
+            link="/opennings"
+          />
         </div>
       )}
     </div>

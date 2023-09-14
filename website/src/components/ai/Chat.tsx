@@ -12,7 +12,6 @@ const BOT = "bot";
 const ENGINE = "engine";
 
 export default function Chat() {
-  const { expanded } = useSidebar();
   const {
     game,
     orientation,
@@ -113,7 +112,7 @@ export default function Chat() {
     body: {
       moves: game.history(),
     },
-    experimental_onFunctionCall: functionCallHandler,
+    // experimental_onFunctionCall: functionCallHandler,
   });
 
   useEffect(() => {

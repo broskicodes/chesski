@@ -81,13 +81,7 @@ export const NotificationProvider = ({ children }: PropsWithChildren) => {
       removeNotification,
       newAlert,
     }),
-    [
-      notifs,
-      alert,
-      addNotification,
-      removeNotification,
-      newAlert,
-    ],
+    [notifs, alert, addNotification, removeNotification, newAlert],
   );
 
   return (

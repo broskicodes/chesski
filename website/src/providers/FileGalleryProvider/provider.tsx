@@ -24,8 +24,8 @@ import type {
 import type { PublicFile } from "@oddjs/odd/fs/v1/PublicFile";
 import { isTree, isFile } from "@oddjs/odd/fs/types/check";
 import { useNotifications } from "../NotificationProvider";
-import { parse } from "pgn-parser";
-import { parsedPgnToString } from "../../utils/helpers";
+// import { parse } from "pgn-parser";
+// import { parsedPgnToString } from "../../utils/helpers";
 
 interface FileLink {
   size: number;
@@ -119,46 +119,49 @@ export const GalleryProvider = ({ children }: PropsWithChildren) => {
 
   const parsePgnToFiles = useCallback(
     async (pgnData: Uint8Array) => {
-      if (!isConnected() || !fs) {
-        return;
-      }
+      throw new Error("Can't do that bud");
 
-      setIsLoading(true);
+      // if (!isConnected() || !fs) {
+      //   return;
+      // }
 
-      const decoder = new TextDecoder("utf-8");
+      // setIsLoading(true);
 
-      const pgns = parse(decoder.decode(pgnData));
+      // const decoder = new TextDecoder("utf-8");
 
-      await Promise.all(
-        pgns.map(async (pgn) => {
-          const timeControl = pgn.headers?.at(9)?.value as string;
-          const dirname =
-            TimeControlMap[timeControl as TimeControls] ?? GameType.Other;
+      // const pgns = parse("decoder.decode(pgnData)");
 
-          const identifier = (pgn.headers?.at(2)?.value as string)
-            .concat(pgn.headers?.at(10)?.value as string)
-            .concat(pgn.headers?.at(4)?.value as string)
-            .concat(pgn.headers?.at(5)?.value as string);
+      // await Promise.all(
+      //   pgns.map(async (pgn) => {
+      //     const timeControl = pgn.headers?.at(9)?.value as string;
+      //     const dirname =
+      //       TimeControlMap[timeControl as TimeControls] ?? GameType.Other;
 
-          const name = Buffer.from(
-            await window.crypto.subtle.digest(
-              "SHA-256",
-              Buffer.from(identifier),
-            ),
-          ).toString("hex");
-          const pgnStr = parsedPgnToString(pgn);
+      //     const identifier = (pgn.headers?.at(2)?.value as string)
+      //       .concat(pgn.headers?.at(10)?.value as string)
+      //       .concat(pgn.headers?.at(4)?.value as string)
+      //       .concat(pgn.headers?.at(5)?.value as string);
 
-          await writeFile(path.file(dirname, name), Buffer.from(pgnStr));
-        }),
-      );
+      //     const name = Buffer.from(
+      //       await window.crypto.subtle.digest(
+      //         "SHA-256",
+      //         Buffer.from(identifier),
+      //       ),
+      //     ).toString("hex");
+      //     const pgnStr = parsedPgnToString(pgn);
 
-      await fs.publish();
-      setIsLoading(false);
+      //     await writeFile(path.file(dirname, name), Buffer.from(pgnStr));
+      //   }),
+      // );
 
-      await getFilesFromWnfs();
-      addNotification({ msg: "Files uploaded successfully", type: "success" });
+      // await fs.publish();
+      // setIsLoading(false);
+
+      // await getFilesFromWnfs();
+      // addNotification({ msg: "Files uploaded successfully", type: "success" });
     },
-    [isConnected, fs, writeFile, getFilesFromWnfs, addNotification],
+    [],
+    // [isConnected, fs, writeFile, getFilesFromWnfs, addNotification],
   );
 
   const readFile = useCallback(

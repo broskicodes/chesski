@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { useNotifications } from "../../providers/NotificationProvider";
 import { useSession } from "../../providers/OddSessionProvider";
 import { Button } from "./Button";
 import { ConnectModal } from "./Modal";
@@ -18,7 +17,7 @@ export const LandingPage = ({ header, subText, link }: Props) => {
 
   return (
     <div className="h-screen w-full flex flex-col items-center justify-center space-y-8">
-      {showModal && <ConnectModal handleSuccess={() => setShowModal(false)}/>}
+      {showModal && <ConnectModal handleSuccess={() => setShowModal(false)} />}
       <div
         style={{
           width: "512px",
