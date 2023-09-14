@@ -16,7 +16,7 @@ const SidebarContext = createContext({
 export const useSidebar = () => useContext(SidebarContext);
 
 export const SidebarProvider = ({ children }: PropsWithChildren) => {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
 
   const toggleExpanded = useCallback(() => {
     setExpanded((curr) => !curr);

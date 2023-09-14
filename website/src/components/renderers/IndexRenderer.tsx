@@ -40,7 +40,7 @@ export const IndexRenderer = () => {
                 <LandingPage
                   link="/play"
                   header="Your own personal chess coach"
-                  subText="Train against Chesski to get practice with general chess concepts and positional tactics"
+                  subText="Training with Chesski will help you identify and improve your weaknesses while you learn new chess concepts"
                 />
               </ChessboardProvider>
             </PgnProvider>
@@ -51,7 +51,7 @@ export const IndexRenderer = () => {
           <LandingPage
             link="/play"
             header="Your own personal chess coach"
-            subText="Train against Chesski to get practice with general chess concepts and positional tactics"
+            subText="Training with Chesski will help you identify and improve your weaknesses while you learn new chess concepts"
           />
         </div>
       )}

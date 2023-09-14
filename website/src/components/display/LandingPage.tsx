@@ -48,7 +48,7 @@ export const LandingPage = ({ header, subText, link }: Props) => {
             setShowModal(true);
           }}
         >
-          Connect
+          Get Started
         </Button>
       )}
     </div>
