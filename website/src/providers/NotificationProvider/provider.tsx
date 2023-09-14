@@ -1,4 +1,10 @@
-import { PropsWithChildren, useCallback, useMemo, useState } from "react";
+import {
+  PropsWithChildren,
+  ReactNode,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import {
   NotificationContext,
   Notification,
@@ -75,7 +81,13 @@ export const NotificationProvider = ({ children }: PropsWithChildren) => {
       removeNotification,
       newAlert,
     }),
-    [notifs, alert, addNotification, removeNotification, newAlert],
+    [
+      notifs,
+      alert,
+      addNotification,
+      removeNotification,
+      newAlert,
+    ],
   );
 
   return (

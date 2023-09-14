@@ -9,31 +9,15 @@ import { BottomNav } from "./BottonNav";
 import { SidebarProvider } from "../../providers/SidebarProvider";
 
 export const Page = ({ children }: PropsWithChildren) => {
-  const [screenWidth, setScreenWidth] = useState(0);
-
-  useEffect(() => {
-    setScreenWidth(window.innerWidth);
-
-    const sizeChangeHandler = (_event: Event) => {
-      setScreenWidth(window.innerWidth);
-    };
-
-    window.addEventListener("resize", sizeChangeHandler);
-
-    return () => {
-      window.removeEventListener("resize", sizeChangeHandler);
-    };
-  }, []);
-
   return (
-    <div className={""}>
+    <div className={"font-mono"}>
       <title>Chesski</title>
       <Analytics />
       <NotificationProvider>
         <SessionProvider>
           <Notifications />
           <SidebarProvider>
-            {screenWidth >= 640 ? <Sidebar /> : <BottomNav />}
+            <Sidebar />
             {children}
           </SidebarProvider>
         </SessionProvider>

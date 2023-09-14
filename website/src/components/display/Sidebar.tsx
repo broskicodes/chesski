@@ -1,89 +1,122 @@
-import {
-  PropsWithChildren,
-  ReactNode,
-} from "react";
+import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { ProfileIcon } from "../icons/ProfileIcon";
 import { useSession } from "../../providers/OddSessionProvider";
 import { DisconnectIcon } from "../icons/DisconnectIcon";
 import { DeviceLinkIcon } from "../icons/DeivceLinkIcons";
 import { PlayChessIcon } from "../icons/PlayChessIcon";
+import { OpenningsIcon } from "../icons/OpenningsIcon";
 import { MenuIcon } from "../icons/MenuIcon";
 import { useSidebar } from "../../providers/SidebarProvider";
+import Link from "next/link";
 
 export const Sidebar = ({ children }: PropsWithChildren) => {
   const { isConnected, username, disconnect } = useSession();
   const { expanded, toggleExpanded } = useSidebar();
   const router = useRouter();
 
+  const [screenWidth, setScreenWidth] = useState(0);
+
+  useEffect(() => {
+    setScreenWidth(window.innerWidth);
+
+    const sizeChangeHandler = (_event: Event) => {
+      setScreenWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", sizeChangeHandler);
+
+    return () => {
+      window.removeEventListener("resize", sizeChangeHandler);
+    };
+  }, []);
+
   return (
     <aside
       className={`h-screen fixed left-0 top-0 z-40`}
       hidden={!isConnected()}
     >
-      <nav className="h-full flex flex-col bg-white shadow-md border-r">
-        <div className="p-4 pb-2 flex justify-between items-center">
-          <div
-            className={`overflow-hidden transition-all font-bold text-xl ${
-              expanded ? "w-32" : "w-0"
-            }`}
-          >
-            Chesski
-          </div>
-          <button
-            onClick={toggleExpanded}
-            className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100"
-          >
-            <MenuIcon height={1.5} />
-          </button>
-        </div>
-        <ul className="flex-1 px-3">
-          <SidebarItem
-            icon={PlayChessIcon({ height: 1.5 })}
-            text={"Play Chesski"}
-            active={router.route === "/"}
-            handleClick={() => {
-              router.route === "/" ? {} : router.push("/");
-            }}
-          />
-          {children}
-          {isConnected() && (
-            <div className={`absolute bottom-16`}>
-              <SidebarItem
-                icon={DeviceLinkIcon({ height: 1.5 })}
-                text={"Link Device"}
-                handleClick={() => {
-                  router.push("/link-device/authed");
-                }}
-              />
-              <SidebarItem
-                icon={DisconnectIcon({ height: 1.5 })}
-                text={"Disconnect"}
-                handleClick={disconnect}
-              />
-            </div>
-          )}
-        </ul>
-        {isConnected() && (
-          <div className="border-t flex p-3">
-            <div className="py-1 px-3 my-1">
-              <ProfileIcon height={1.5} />
-            </div>
+      {screenWidth < 640 && !expanded && (
+        <button
+          onClick={toggleExpanded}
+          className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 mt-4 ml-4"
+        >
+          <MenuIcon height={1.5} />
+        </button>
+      )}
+      {(screenWidth >= 640 || expanded) && (
+        <nav className="h-full flex flex-col bg-white shadow-md border-r">
+          <div className="p-4 pb-2 flex justify-between items-center">
             <div
-              className={`
+              className={`overflow-hidden transition-all font-bold text-xl ${
+                expanded ? "w-32" : "w-0"
+              }`}
+            >
+              <Link href={"/"}>Chesski</Link>
+            </div>
+            <button
+              onClick={toggleExpanded}
+              className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100"
+            >
+              <MenuIcon height={1.5} />
+            </button>
+          </div>
+          <ul className={`flex-1 px-3 `}>
+            <SidebarItem
+              icon={PlayChessIcon({ height: 1.5 })}
+              text={"Play Chesski"}
+              active={router.route === "/play"}
+              handleClick={() => {
+                router.route === "/play" ? {} : router.push("/play");
+              }}
+            />
+            <SidebarItem
+              icon={OpenningsIcon({ height: 1.5 })}
+              text={"Study Opennings"}
+              active={router.route === "/opennings"}
+              handleClick={() => {
+                router.route === "/opennings" ? {} : router.push("/opennings");
+              }}
+            />
+            {children}
+            {isConnected() && (
+              <div className={`absolute bottom-16`}>
+                <SidebarItem
+                  icon={DeviceLinkIcon({ height: 1.5 })}
+                  text={"Link Device"}
+                  handleClick={() => {
+                    router.push("/link-device/authed");
+                  }}
+                />
+                <SidebarItem
+                  icon={DisconnectIcon({ height: 1.5 })}
+                  text={"Disconnect"}
+                  handleClick={disconnect}
+                />
+              </div>
+            )}
+          </ul>
+          {isConnected() && (
+            <div className="border-t flex p-3">
+              <div className="py-1 px-3 my-1">
+                <ProfileIcon height={1.5} />
+              </div>
+              <div
+                className={`
                 flex justify-between items-center
                 overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}
             `}
-            >
-              <div className="leading-4">
-                <h4 className="font-semibold">
-                  User: <span className="font-normal">{username}</span>
-                </h4>
+              >
+                <div className="leading-4">
+                  <h4 className="font-semibold">
+                    User: <span className="font-normal">{username}</span>
+                  </h4>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-      </nav>
+          )}
+        </nav>
+      )}
     </aside>
   );
 };

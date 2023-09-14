@@ -1,4 +1,4 @@
-import { Chess, Square } from "chess.js";
+import { Chess, Move, Square } from "chess.js";
 import { PropsWithChildren, useCallback, useMemo, useState } from "react";
 import { usePgns } from "../PgnProvider";
 import { ChessboardContext, ChessboardProviderContext } from "./context";
@@ -13,6 +13,9 @@ export const ChessboardProvider = ({ children }: PropsWithChildren) => {
   const [game, setGame] = useState<Chess>(new Chess());
   const [orientation, setOrientation] = useState<Player>(Player.White);
   const [turn, setTurn] = useState<Player>(Player.White);
+  const [highlightedSquares, setHighlightedSquares] = useState<Square[]>([]);
+  const [highlightedMoves, setHighlightedMoves] = useState<Move[]>([]);
+  const [arrows, setArrows] = useState<Square[][]>([]);
 
   const makeMove = useCallback(
     (
@@ -53,9 +56,11 @@ export const ChessboardProvider = ({ children }: PropsWithChildren) => {
   }, []);
 
   const playContinuation = useCallback(
-    (moves: string[]) => {
+    (moves: string[], reset: boolean = false) => {
       const tempGame = new Chess();
-      tempGame.loadPgn(game.pgn());
+      if (!reset) {
+        tempGame.loadPgn(game.pgn());
+      }
 
       for (const move of moves) {
         try {
@@ -128,11 +133,34 @@ export const ChessboardProvider = ({ children }: PropsWithChildren) => {
     setOrientation(orientation === Player.White ? Player.Black : Player.White);
   }, [orientation]);
 
+  const addArrows = useCallback(
+    (newArrows: Square[][], reset: boolean) => {
+      const newArr = reset ? newArrows : [...arrows, ...newArrows];
+      setArrows(newArr);
+    },
+    [arrows],
+  );
+
+  const addHighlightedSquares = useCallback(
+    (newSqrs: Square[], reset: boolean) => {
+      const newArr = reset ? newSqrs : [...highlightedSquares, ...newSqrs];
+      setHighlightedSquares(newArr);
+    },
+    [highlightedSquares],
+  );
+
+  const resetHighlightedMoves = useCallback((moves: Move[]) => {
+    setHighlightedMoves(moves);
+  }, []);
+
   const value: ChessboardProviderContext = useMemo(
     () => ({
       game,
       turn,
       orientation,
+      arrows,
+      highlightedSquares,
+      highlightedMoves,
       makeMove,
       playContinuation,
       setPosition,
@@ -141,11 +169,17 @@ export const ChessboardProvider = ({ children }: PropsWithChildren) => {
       undo,
       reset,
       swapOrientation,
+      addArrows,
+      addHighlightedSquares,
+      resetHighlightedMoves,
     }),
     [
       game,
       turn,
       orientation,
+      arrows,
+      highlightedMoves,
+      highlightedSquares,
       makeMove,
       playContinuation,
       setPosition,
@@ -154,6 +188,9 @@ export const ChessboardProvider = ({ children }: PropsWithChildren) => {
       undo,
       reset,
       swapOrientation,
+      addArrows,
+      addHighlightedSquares,
+      resetHighlightedMoves,
     ],
   );
 

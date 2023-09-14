@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { Chessboard } from "react-chessboard";
+import { useCallback, useEffect, useState } from "react";
 import { Player, useChessboard } from "../../providers/ChessboardProvider";
 import { useNotifications } from "../../providers/NotificationProvider";
 import {
@@ -9,9 +8,7 @@ import {
   useStockfish,
 } from "../../providers/StockfishProvider/context";
 import { Button } from "../display/Button";
-import { DarkSquares } from "../../utils/types";
 import { Square } from "react-chessboard/dist/chessboard/types";
-import { Move } from "chess.js";
 import { FlipBoardIcon } from "../icons/FlibBoardIcon";
 import { UndoArrowIcon } from "../icons/UndoArrowIcon";
 import { ResetIcon } from "../icons/ResetIcon";
@@ -20,6 +17,7 @@ import { Hint2Icon } from "../icons/Hint2Icon";
 import { Tooltip } from "../display/Tooltip";
 import { StatusIcon } from "../icons/StatusIcon";
 import { useSidebar } from "../../providers/SidebarProvider";
+import { CustomBoard } from "./CustomBoard";
 
 const BOT = "bot";
 const ENGINE = "engine";
@@ -34,7 +32,9 @@ export const VersusBoard = () => {
     undo,
     swapOrientation,
     reset,
-    onDropVersus,
+    addArrows,
+    addHighlightedSquares,
+    resetHighlightedMoves,
     orientation,
   } = useChessboard();
   const { addNotification, newAlert } = useNotifications();
@@ -61,19 +61,16 @@ export const VersusBoard = () => {
   const [botMove, setBotMove] = useState<string | null>(null);
   const [suggestedMoves, setSuggestedMoves] = useState<PV[] | null>(null);
   const [hintLvl, setHintLvl] = useState(0);
-  const [highlightedSqrs, setHighlightedSqrs] = useState<string[]>([]);
-  const [highlightedMoves, setHighlightedMoves] = useState<Move[]>([]);
-  const [arrows, setArrows] = useState<Square[][]>([]);
 
   const clearCache = useCallback(() => {
     setBotSearchFinished(false);
     setEngineSearchFinished(false);
-    setHighlightedSqrs([]);
+    addHighlightedSquares([], true);
     setHintLvl(0);
-    setArrows([]);
+    addArrows([], true);
     setSuggestedMoves(null);
-    setHighlightedMoves([]);
-  }, []);
+    resetHighlightedMoves([]);
+  }, [resetHighlightedMoves, addArrows, addHighlightedSquares]);
 
   const addContinuation = useCallback(() => {
     if (!continuation) {
@@ -233,32 +230,31 @@ export const VersusBoard = () => {
 
     switch (hintLvl) {
       case 1: {
-        setHighlightedSqrs((sqrs) => {
-          const fromSqrs = sqrPairs.map((pair) => {
-            return pair[0];
-          });
-          return [...sqrs, ...fromSqrs];
+        const fromSqrs = sqrPairs.map((pair) => {
+          return pair[0];
         });
+        addHighlightedSquares(fromSqrs, false);
         break;
       }
       case 2: {
-        setHighlightedSqrs([]);
-        setArrows((arrs) => {
-          return [...arrs, ...sqrPairs];
-        });
+        addHighlightedSquares([], true);
+        addArrows(sqrPairs, false);
         break;
       }
       default: {
         if (hintLvl > 2) {
-          setHighlightedSqrs([]);
-          console.log(sqrPairs);
-          setArrows((arrs) => {
-            return [...arrs, ...sqrPairs];
-          });
+          addHighlightedSquares([], true);
+          addArrows(sqrPairs, false);
         }
       }
     }
-  }, [hintLvl, getMoveSuggestions, suggestedMoves]);
+  }, [
+    hintLvl,
+    getMoveSuggestions,
+    suggestedMoves,
+    addHighlightedSquares,
+    addArrows,
+  ]);
 
   useEffect(() => {
     if (game.isGameOver()) {
@@ -342,59 +338,7 @@ export const VersusBoard = () => {
           </div>
         </div>
         <div>
-          <Chessboard
-            position={game.fen()}
-            onPieceDrop={(src, tgt) => {
-              const res = onDropVersus(src, tgt);
-              if (res) {
-                clearCache();
-              }
-
-              return res;
-            }}
-            onSquareClick={(sqr) => {
-              if (highlightedMoves.length > 0) {
-                if (makeMove({ from: highlightedMoves[0].from, to: sqr })) {
-                  clearCache();
-                  return;
-                }
-              }
-
-              setHighlightedMoves(game.moves({ square: sqr, verbose: true }));
-              setHighlightedSqrs([]);
-            }}
-            onSquareRightClick={(sqr) => {
-              setHighlightedSqrs((sqrs) => {
-                return [...sqrs, sqr];
-              });
-            }}
-            customSquareStyles={(() => {
-              const sqrStyles: { [key: string]: {} } = {};
-              highlightedSqrs.forEach((sqr) => {
-                sqrStyles[sqr] = {
-                  background: DarkSquares.includes(sqr) ? "#F48367" : "#F7A28D",
-                };
-              });
-              highlightedMoves.forEach((sqr) => {
-                sqrStyles[sqr.from] = {
-                  ...sqrStyles[sqr.from],
-                  background: "#E6FF99",
-                };
-                sqrStyles[sqr.to] = {
-                  ...sqrStyles[sqr.to],
-                  background:
-                    game.get(sqr.to) &&
-                    game.get(sqr.from).color !== game.get(sqr.to).color
-                      ? "radial-gradient(circle, rgba(0,0,0,.1) 75%, transparent 10%)"
-                      : "radial-gradient(circle, rgba(0,0,0,.1) 25%, transparent 10%)",
-                };
-              });
-              return sqrStyles;
-            })()}
-            customArrows={arrows}
-            boardOrientation={orientation}
-            boardWidth={boardSize}
-          />
+          <CustomBoard clearCache={clearCache} boardSize={boardSize} />
         </div>
         <div className="flex flex-row w-full mt-4 justify-between">
           <div className="flex flex-row space-x-3">
