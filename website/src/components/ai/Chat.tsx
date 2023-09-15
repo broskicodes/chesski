@@ -113,7 +113,7 @@ export default function Chat() {
     body: {
       moves: game.history(),
     },
-    // experimental_onFunctionCall: functionCallHandler,
+    experimental_onFunctionCall: functionCallHandler,
   });
 
   useEffect(() => {
