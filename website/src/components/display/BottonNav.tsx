@@ -1,7 +1,4 @@
-import {
-  PropsWithChildren,
-  ReactNode,
-} from "react";
+import { PropsWithChildren, ReactNode } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "../../providers/OddSessionProvider";
 import { PlayChessIcon } from "../icons/PlayChessIcon";

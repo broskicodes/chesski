@@ -15,6 +15,7 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
   const { newAlert, addNotification } = useNotifications();
   const [program, setProgram] = useState<odd.Program | null>(null);
   const [session, setSession] = useState<odd.Session | null>(null);
+  const [loading, setLoading] = useState(false);
   // const [chessComUsername, setChessComUsername] = useState<string | null>(null);
   const router = useRouter();
 
@@ -33,6 +34,8 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
         console.error("Already connected");
         return false;
       }
+
+      setLoading(true);
 
       const valid = await program.auth.isUsernameValid(username);
       const available = await program.auth.isUsernameAvailable(username);
@@ -56,6 +59,7 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
               "Link a device!",
             )
           ) {
+            setLoading(false);
             router.push("/link-device/authed");
           }
           // setChessComUsername(pgnName);
@@ -66,12 +70,14 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
           // );
           // await session?.fs?.publish();
 
+          setLoading(false);
           return true;
         }
       } else {
         addNotification({ type: "error", msg: "Username unavailable" });
       }
 
+      setLoading(false);
       return false;
     },
     [program, session, router, addNotification, newAlert],
@@ -147,6 +153,7 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
       username: session?.username ?? null,
       // chessComUsername,
       fs: session?.fs ?? null,
+      loading,
       isConnected,
       connect,
       disconnect,
@@ -156,6 +163,7 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
     [
       session,
       // chessComUsername,
+      loading,
       isConnected,
       connect,
       disconnect,

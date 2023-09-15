@@ -23,7 +23,7 @@ export const StockfishProvider = ({ children }: PropsWithChildren) => {
         // console.log(data);
         const engine = engines[engineName];
 
-        if (!engine) {
+        if (!engine || !data) {
           return;
         }
 

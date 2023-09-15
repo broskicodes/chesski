@@ -4,7 +4,7 @@ import { useSession } from "../../providers/OddSessionProvider";
 import { PgnProvider } from "../../providers/PgnProvider";
 import { StockfishProvider } from "../../providers/StockfishProvider";
 import { VersusBoard } from "../chess/VersusBoard";
-import { Connect } from "../connection/Connect";
+import { LandingPage } from "../display/LandingPage";
 
 export const PlayRenderer = () => {
   const { isConnected } = useSession();
@@ -25,7 +25,11 @@ export const PlayRenderer = () => {
         </>
       ) : (
         <div className="flex items-center h-screen justify-center">
-          <Connect />
+          <LandingPage
+            header="Elevate your game"
+            subText="Put your overall chess skill to the test. Train against Chesski in full games"
+            link="/play"
+          />
         </div>
       )}
     </div>

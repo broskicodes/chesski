@@ -1,20 +1,18 @@
-import { DiscoveryBoard } from "../chess/DiscoveryBoard";
-import Dropzone from "../upload/Dropzone";
-import { FileUploadButton } from "../upload/FileUploadButton";
 import { GalleryProvider } from "../../providers/FileGalleryProvider";
 import { PgnProvider } from "../../providers/PgnProvider";
 import { useSession } from "../../providers/OddSessionProvider";
-import { Connect } from "../connection/Connect";
 import { ChessboardProvider } from "../../providers/ChessboardProvider";
-import { Header } from "../display/Header";
 import { useEffect } from "react";
 import { useNotifications } from "../../providers/NotificationProvider";
 import { useRouter } from "next/router";
+import { LandingPage } from "../display/LandingPage";
+import { useSidebar } from "../../providers/SidebarProvider";
 
 export const IndexRenderer = () => {
   const { isConnected } = useSession();
   const { addNotification } = useNotifications();
   const { query } = useRouter();
+  const { expanded } = useSidebar();
 
   useEffect(() => {
     const { authed } = query;
@@ -34,22 +32,27 @@ export const IndexRenderer = () => {
   return (
     <div className="flex flex-col items-center h-full">
       {isConnected() ? (
-        <>
-          <Header />
+        <div className={`${expanded ? "md:ml-72" : "md:ml-20"}`}>
           <GalleryProvider>
-            <Dropzone>
-              <FileUploadButton />
-              <PgnProvider>
-                <ChessboardProvider>
-                  <DiscoveryBoard />
-                </ChessboardProvider>
-              </PgnProvider>
-            </Dropzone>
+            <PgnProvider>
+              <ChessboardProvider>
+                {/* <DiscoveryBoard /> */}
+                <LandingPage
+                  link="/play"
+                  header="Your own personal chess coach"
+                  subText="Training with Chesski will help you identify and improve your weaknesses while you learn new chess concepts"
+                />
+              </ChessboardProvider>
+            </PgnProvider>
           </GalleryProvider>
-        </>
+        </div>
       ) : (
         <div className="flex items-center h-full">
-          <Connect />
+          <LandingPage
+            link="/play"
+            header="Your own personal chess coach"
+            subText="Training with Chesski will help you identify and improve your weaknesses while you learn new chess concepts"
+          />
         </div>
       )}
     </div>
