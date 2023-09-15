@@ -1,6 +1,5 @@
 import { OpenAI } from "openai";
 import { OpenAIStream, StreamingTextResponse } from "ai";
-import { NextApiResponse } from "next";
 import { CompletionCreateParams } from "openai/resources/chat";
 
 export const runtime = "edge";
@@ -71,12 +70,12 @@ const functionDefinitions: CompletionCreateParams.Function[] = [
   },
 ];
 
-const post = async (req: Request) => {
+export const post = async (req: Request) => {
   const { messages, moves } = await req.json();
   const systemMessage = {
     role: "system",
     content:
-      "you are an assistant that plays chess against a user in an openning they choose. you control the game board, you can set and reset the position. do not include move numbers when listing chess moves. assume user play white unless they specify.",
+      "you are an assistant that plays chess against a user in an openning they choose. you control the game board, you can set and reset the position. assume user plays white unless they specify. list moves individually without move numbers",
   };
   const posInitMsg = {
     role: "user",
@@ -87,7 +86,7 @@ const post = async (req: Request) => {
   const response = await openai.chat.completions.create({
     model: "gpt-3.5-turbo",
     stream: true,
-    messages: [systemMessage, ...messages, posInitMsg],
+    messages: [systemMessage, posInitMsg, ...messages],
     max_tokens: 500,
     temperature: 0,
     functions: functionDefinitions,
@@ -98,15 +97,27 @@ const post = async (req: Request) => {
   });
 
   // Convert the response into a friendly text-stream
-  const stream = OpenAIStream(response, {});
+  const stream = OpenAIStream(response);
 
   // Respond with the stream
-  return new StreamingTextResponse(stream);
+  return new StreamingTextResponse(stream, {
+    status: 200
+  });
 };
 
-const handler = async (req: Request, res: NextApiResponse) => {
+const handler = async (req: Request, _res: Response) => {
   if (req.method === "POST") {
     return await post(req);
+  } else if (req.method === "OPTIONS") {
+    return new Response(undefined, {
+      status: 200,
+      headers: {
+        // 'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Origin': 'https://chesski.lol',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      }
+    })
   }
 };
 

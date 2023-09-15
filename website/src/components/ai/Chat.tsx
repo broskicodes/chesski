@@ -4,7 +4,6 @@ import { useChat } from "ai/react";
 import { FunctionCallHandler, nanoid } from "ai";
 import { useCallback, useEffect, useState } from "react";
 import { Player, useChessboard } from "../../providers/ChessboardProvider";
-import { useSidebar } from "../../providers/SidebarProvider";
 import { SkillLevel, useStockfish } from "../../providers/StockfishProvider";
 import { Button } from "../display/Button";
 
@@ -34,16 +33,18 @@ export default function Chat() {
         swapOrientation();
       }
 
-      playContinuation(
-        moves.map((move) => move.split(".").at(-1) as string),
-        true,
-      );
+      const continuation = moves.flatMap((move) => {
+        const entry = move.split(".").at(-1) as string;
+        return entry.split(" ").filter((m) => m);
+      });
+      console.log(continuation)
+      playContinuation(continuation, true);
     },
     [orientation, playContinuation, swapOrientation],
   );
 
   const functionCallHandler: FunctionCallHandler = useCallback(
-    async (chatMessages, functionCall) => {
+    async (_chatMessages, functionCall) => {
       console.log(functionCall);
 
       switch (functionCall.name) {
@@ -51,18 +52,18 @@ export default function Chat() {
           const args = JSON.parse(functionCall.arguments);
           setOpenningPositions(args["moves"], args["orientation"]);
 
-          const functionResponse = {
-            messages: [
-              ...chatMessages,
-              {
-                id: nanoid(),
-                name: "setOpenningPositions",
-                role: "function" as const,
-                content: "Done. Shall I play against you?",
-              },
-            ],
-          };
-          return functionResponse;
+          // const functionResponse = {
+          //   messages: [
+          //     ...chatMessages,
+          //     {
+          //       id: nanoid(),
+          //       name: "setOpenningPositions",
+          //       role: "function" as const,
+          //       content: "Sure. Should i turn on the engine?",
+          //     },
+          //   ],
+          // };
+          // return functionResponse;
           break;
         }
         case "resetGame": {
@@ -112,7 +113,7 @@ export default function Chat() {
     body: {
       moves: game.history(),
     },
-    // experimental_onFunctionCall: functionCallHandler,
+    experimental_onFunctionCall: functionCallHandler,
   });
 
   useEffect(() => {
@@ -146,31 +147,41 @@ export default function Chat() {
 
   return (
     <div
-      className={`flex flex-col h-full sm:mt-0 sm:justify-center 
-       items-center`}
+      className={`flex flex-col h-full sm:mt-0 sm:justify-center items-center `}
     >
-      <div className="h-64 w-96 overflow-y-auto mb-4">
-        <div className="max-h-full">
-          {messages
-            .filter((m) => m.content)
-            .map((m, index) => (
-              <div key={index}>
-                {m.role === "user" ? "User: " : "Chesski: "}
-                {m.content}
-              </div>
-            ))}
+      <div className="bg-gray-100 p-12 rounded-3xl">
+        <div
+          className="overflow-y-auto w-96 mb-4 scroll-smooth"
+          style={{ width: "30rem;", height: "24rem" }}
+        >
+          <div className="h-full">
+            {messages
+              .filter((m) => m.content)
+              .map((m, index) => (
+                <div key={index}>
+                  <span className="font-bold">
+                    {m.role === "user" ? "User: " : "Chesski: "}
+                  </span>
+                  {m.content}
+                </div>
+              ))}
+          </div>
         </div>
-      </div>
 
-      <form className="w-96 flex flex-row space-x-3" onSubmit={handleSubmit}>
-        <input
-          className="border grow"
-          placeholder="Enter Message"
-          value={input}
-          onChange={handleInputChange}
-        />
-        <Button type="submit">Send</Button>
-      </form>
+        <form
+          className="flex w-96 flex-row space-x-3"
+          style={{ width: "30rem;" }}
+          onSubmit={handleSubmit}
+        >
+          <input
+            className="border grow"
+            placeholder="Enter Message"
+            value={input}
+            onChange={handleInputChange}
+          />
+          <Button type="submit">Send</Button>
+        </form>
+      </div>
     </div>
   );
 }

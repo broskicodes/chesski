@@ -297,7 +297,7 @@ export const VersusBoard = () => {
             </label>
             <select
               id="lvlSlelect"
-              className="w-32 rounded-md"
+              className="w-40 rounded-md"
               value={skillLvl}
               onChange={({ target }) => {
                 if (setEngineSkillLvl(BOT, target.value as SkillLevel)) {

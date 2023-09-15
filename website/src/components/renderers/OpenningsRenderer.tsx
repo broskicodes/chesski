@@ -21,9 +21,9 @@ export const OpenningsRenderer = () => {
               <ChessboardProvider>
                 <StockfishProvider>
                   <div
-                    className={`h-full ${expanded ? "md:ml-72" : "md:ml-20"}`}
+                    className={`h-screen ${expanded ? "md:ml-72" : "md:ml-20"}`}
                   >
-                    <div className="flex flex-col pt-12 lg:pt-0 lg:flex-row h-full w-full space-y-6 lg:space-y-0 lg:space-x-20 justify-center items-center">
+                    <div className="flex flex-col pt-12 lg:pt-0 lg:flex-row h-full w-full space-y-6 lg:space-y-0 lg:space-x-32 justify-center items-center">
                       <OpenningsBoard />
                       <Chat />
                     </div>
