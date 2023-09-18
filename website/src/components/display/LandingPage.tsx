@@ -1,6 +1,11 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useSession } from "../../providers/OddSessionProvider";
+import {
+  ScreenSize,
+  ScreenSizeBoardMap,
+  useSidebar,
+} from "../../providers/SidebarProvider";
 import { Button } from "./Button";
 import { ConnectModal } from "./Modal";
 
@@ -12,6 +17,7 @@ interface Props {
 
 export const LandingPage = ({ header, subText, link }: Props) => {
   const { isConnected } = useSession();
+  const { screenSize } = useSidebar();
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
 
@@ -20,7 +26,7 @@ export const LandingPage = ({ header, subText, link }: Props) => {
       {showModal && <ConnectModal handleSuccess={() => setShowModal(false)} />}
       <div
         style={{
-          width: "512px",
+          width: `${ScreenSizeBoardMap[screenSize ?? ScreenSize.Mobile]}px`,
         }}
         className="font-bold text-5xl text-center"
       >
@@ -28,9 +34,13 @@ export const LandingPage = ({ header, subText, link }: Props) => {
       </div>
       <div
         style={{
-          width: "464px",
+          width: `${
+            ScreenSizeBoardMap[screenSize ?? ScreenSize.Mobile] - 48
+          }px`,
         }}
-        className="font-medium text-2xl text-center text-gray-600"
+        className={`font-medium ${
+          screenSize === ScreenSize.Mobile ? "text-xl" : "text-2xl"
+        } text-center text-gray-600`}
       >
         {subText}
       </div>

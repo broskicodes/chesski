@@ -1,6 +1,5 @@
 import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { ProfileIcon } from "../icons/ProfileIcon";
 import { useSession } from "../../providers/OddSessionProvider";
 import { DisconnectIcon } from "../icons/DisconnectIcon";
 import { DeviceLinkIcon } from "../icons/DeivceLinkIcons";
@@ -9,6 +8,7 @@ import { OpenningsIcon } from "../icons/OpenningsIcon";
 import { MenuIcon } from "../icons/MenuIcon";
 import { useSidebar } from "../../providers/SidebarProvider";
 import Link from "next/link";
+import { TwitterIcon } from "../icons/TwitterIcon";
 
 export const Sidebar = ({ children }: PropsWithChildren) => {
   const { isConnected, username, disconnect } = useSession();
@@ -72,15 +72,15 @@ export const Sidebar = ({ children }: PropsWithChildren) => {
             />
             <SidebarItem
               icon={OpenningsIcon({ height: 1.5 })}
-              text={"Study Opennings"}
-              active={router.route === "/opennings"}
+              text={"Study Openings"}
+              active={router.route === "/openings"}
               handleClick={() => {
-                router.route === "/opennings" ? {} : router.push("/opennings");
+                router.route === "/openings" ? {} : router.push("/openings");
               }}
             />
             {children}
             {isConnected() && (
-              <div className={`absolute bottom-16`}>
+              <div className={`absolute bottom-20`}>
                 <SidebarItem
                   icon={DeviceLinkIcon({ height: 1.5 })}
                   text={"Link Device"}
@@ -99,7 +99,12 @@ export const Sidebar = ({ children }: PropsWithChildren) => {
           {isConnected() && (
             <div className="border-t flex p-3">
               <div className="py-1 px-3 my-1">
-                <ProfileIcon height={1.5} />
+                <Link
+                  href={"https://twitter.com/_broskitweets"}
+                  target="_blank"
+                >
+                  <TwitterIcon height={1.8} />
+                </Link>
               </div>
               <div
                 className={`
@@ -108,9 +113,7 @@ export const Sidebar = ({ children }: PropsWithChildren) => {
             `}
               >
                 <div className="leading-4">
-                  <h4 className="font-semibold">
-                    User: <span className="font-normal">{username}</span>
-                  </h4>
+                  <p>See Progress Updates</p>
                 </div>
               </div>
             </div>

@@ -6,6 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Player, useChessboard } from "../../providers/ChessboardProvider";
 import { SkillLevel, useStockfish } from "../../providers/StockfishProvider";
 import { Button } from "../display/Button";
+import { ScreenSize, useSidebar } from "../../providers/SidebarProvider";
 
 const BOT = "bot";
 const ENGINE = "engine";
@@ -22,6 +23,7 @@ export default function Chat() {
   } = useChessboard();
   const { initEngine, isInit, setEngineSkillLvl, restartEngine, startSearch } =
     useStockfish();
+  const { screenSize } = useSidebar();
 
   const [engineOn, setEngineOn] = useState(false);
   const [botSearchFinished, setBotSearchFinished] = useState(false);
@@ -33,11 +35,12 @@ export default function Chat() {
         swapOrientation();
       }
 
+      console.log(moves);
       const continuation = moves.flatMap((move) => {
         const entry = move.split(".").at(-1) as string;
         return entry.split(" ").filter((m) => m);
       });
-      console.log(continuation)
+      console.log(continuation);
       playContinuation(continuation, true);
     },
     [orientation, playContinuation, swapOrientation],
@@ -109,7 +112,7 @@ export default function Chat() {
   );
 
   const { messages, input, handleInputChange, handleSubmit } = useChat({
-    api: "/api/gpt/opennings",
+    api: "/api/gpt/openings",
     body: {
       moves: game.history(),
     },
@@ -146,19 +149,14 @@ export default function Chat() {
   }, []);
 
   return (
-    <div
-      className={`flex flex-col h-full sm:mt-0 sm:justify-center items-center `}
-    >
-      <div className="bg-gray-100 p-12 rounded-3xl">
-        <div
-          className="overflow-y-auto w-96 mb-4 scroll-smooth"
-          style={{ width: "30rem;", height: "24rem" }}
-        >
+    <div className={`flex flex-col sm:mt-0 sm:justify-center items-center`}>
+      <div className={`bg-gray-100 p-6 sm:p-8 lg:p-12 rounded-3xl`}>
+        <div className="overflow-y-auto mb-4 scroll-smooth h-64 lg:h-96 w-72 sm:w-96">
           <div className="h-full">
             {messages
               .filter((m) => m.content)
               .map((m, index) => (
-                <div key={index}>
+                <div key={index} className={`text-sm sm:text-base`}>
                   <span className="font-bold">
                     {m.role === "user" ? "User: " : "Chesski: "}
                   </span>
@@ -169,17 +167,18 @@ export default function Chat() {
         </div>
 
         <form
-          className="flex w-96 flex-row space-x-3"
-          style={{ width: "30rem;" }}
+          className="flex flex-row space-x-3 w-72 sm:w-96"
           onSubmit={handleSubmit}
         >
           <input
-            className="border grow"
+            className="border grow text-sm sm:text-base"
             placeholder="Enter Message"
             value={input}
             onChange={handleInputChange}
           />
-          <Button type="submit">Send</Button>
+          <Button type="submit" className="text-sm sm:text-base">
+            Send
+          </Button>
         </form>
       </div>
     </div>

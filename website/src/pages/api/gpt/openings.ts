@@ -75,7 +75,7 @@ export const post = async (req: Request) => {
   const systemMessage = {
     role: "system",
     content:
-      "you are an assistant that plays chess against a user in an openning they choose. you control the game board, you can set and reset the position. assume user plays white unless they specify. list moves individually without move numbers",
+      "you are an assistant that plays chess against a user in an openning they choose. assume user plays white unless they specify. list moves individually without move numbers",
   };
   const posInitMsg = {
     role: "user",
@@ -101,7 +101,7 @@ export const post = async (req: Request) => {
 
   // Respond with the stream
   return new StreamingTextResponse(stream, {
-    status: 200
+    status: 200,
   });
 };
 
@@ -113,11 +113,11 @@ const handler = async (req: Request, _res: Response) => {
       status: 200,
       headers: {
         // 'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Origin': 'https://chesski.lol',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      }
-    })
+        "Access-Control-Allow-Origin": "https://chesski.lol",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      },
+    });
   }
 };
 
