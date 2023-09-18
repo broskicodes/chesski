@@ -11,14 +11,14 @@ import {
 export enum ScreenSize {
   Mobile = "Mobile",
   Tablet = "Tablet",
-  Desktop = "Desktop"
+  Desktop = "Desktop",
 }
 
 export const ScreenSizeBoardMap: { [key in ScreenSize]: number } = {
-  "Mobile": 348,
-  "Tablet": 464,
-  "Desktop": 512,
-}
+  Mobile: 348,
+  Tablet: 464,
+  Desktop: 512,
+};
 
 export interface SidebarProviderContext {
   expanded: boolean;
@@ -68,16 +68,19 @@ export const SidebarProvider = ({ children }: PropsWithChildren) => {
 
     return () => {
       window.removeEventListener("resize", resizeHandler);
-    }
+    };
   }, [findScreenSize]);
 
-  const value: SidebarProviderContext = useMemo(() => ({
-    expanded, screenSize, toggleExpanded
-  }), [expanded, screenSize, toggleExpanded]);
+  const value: SidebarProviderContext = useMemo(
+    () => ({
+      expanded,
+      screenSize,
+      toggleExpanded,
+    }),
+    [expanded, screenSize, toggleExpanded],
+  );
 
   return (
-    <SidebarContext.Provider value={value}>
-      {children}
-    </SidebarContext.Provider>
+    <SidebarContext.Provider value={value}>{children}</SidebarContext.Provider>
   );
 };

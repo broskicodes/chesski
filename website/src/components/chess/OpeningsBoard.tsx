@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { useChessboard } from "../../providers/ChessboardProvider";
-import { ScreenSize, ScreenSizeBoardMap, useSidebar } from "../../providers/SidebarProvider";
+import {
+  ScreenSize,
+  ScreenSizeBoardMap,
+  useSidebar,
+} from "../../providers/SidebarProvider";
 import { CustomBoard } from "./CustomBoard";
 
 export const OpeningsBoard = () => {

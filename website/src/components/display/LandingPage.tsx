@@ -1,7 +1,11 @@
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useSession } from "../../providers/OddSessionProvider";
-import { ScreenSize, ScreenSizeBoardMap, useSidebar } from "../../providers/SidebarProvider";
+import {
+  ScreenSize,
+  ScreenSizeBoardMap,
+  useSidebar,
+} from "../../providers/SidebarProvider";
 import { Button } from "./Button";
 import { ConnectModal } from "./Modal";
 
@@ -30,9 +34,13 @@ export const LandingPage = ({ header, subText, link }: Props) => {
       </div>
       <div
         style={{
-          width: `${ScreenSizeBoardMap[screenSize ?? ScreenSize.Mobile] - 48}px`,
+          width: `${
+            ScreenSizeBoardMap[screenSize ?? ScreenSize.Mobile] - 48
+          }px`,
         }}
-        className={`font-medium ${screenSize === ScreenSize.Mobile ? "text-xl" :"text-2xl"} text-center text-gray-600`}
+        className={`font-medium ${
+          screenSize === ScreenSize.Mobile ? "text-xl" : "text-2xl"
+        } text-center text-gray-600`}
       >
         {subText}
       </div>

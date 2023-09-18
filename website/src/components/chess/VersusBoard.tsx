@@ -16,7 +16,11 @@ import { Hint1Icon } from "../icons/Hint1Icon";
 import { Hint2Icon } from "../icons/Hint2Icon";
 import { Tooltip } from "../display/Tooltip";
 import { StatusIcon } from "../icons/StatusIcon";
-import { ScreenSize, ScreenSizeBoardMap, useSidebar } from "../../providers/SidebarProvider";
+import {
+  ScreenSize,
+  ScreenSizeBoardMap,
+  useSidebar,
+} from "../../providers/SidebarProvider";
 import { CustomBoard } from "./CustomBoard";
 
 const BOT = "bot";
@@ -176,9 +180,7 @@ export const VersusBoard = () => {
 
   useEffect(() => {
     setBoardSize(ScreenSizeBoardMap[screenSize ?? ScreenSize.Mobile]);
-    setIconSize(
-      screenSize === ScreenSize.Mobile ? 1 : 1.3,
-    );
+    setIconSize(screenSize === ScreenSize.Mobile ? 1 : 1.3);
   }, [screenSize]);
 
   useEffect(() => {

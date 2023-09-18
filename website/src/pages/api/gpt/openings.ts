@@ -101,7 +101,7 @@ export const post = async (req: Request) => {
 
   // Respond with the stream
   return new StreamingTextResponse(stream, {
-    status: 200
+    status: 200,
   });
 };
 
@@ -113,11 +113,11 @@ const handler = async (req: Request, _res: Response) => {
       status: 200,
       headers: {
         // 'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Origin': 'https://chesski.lol',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      }
-    })
+        "Access-Control-Allow-Origin": "https://chesski.lol",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      },
+    });
   }
 };
 

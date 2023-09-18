@@ -99,7 +99,10 @@ export const Sidebar = ({ children }: PropsWithChildren) => {
           {isConnected() && (
             <div className="border-t flex p-3">
               <div className="py-1 px-3 my-1">
-                <Link href={"https://twitter.com/_broskitweets"} target="_blank">
+                <Link
+                  href={"https://twitter.com/_broskitweets"}
+                  target="_blank"
+                >
                   <TwitterIcon height={1.8} />
                 </Link>
               </div>

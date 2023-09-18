@@ -40,7 +40,7 @@ export default function Chat() {
         const entry = move.split(".").at(-1) as string;
         return entry.split(" ").filter((m) => m);
       });
-      console.log(continuation)
+      console.log(continuation);
       playContinuation(continuation, true);
     },
     [orientation, playContinuation, swapOrientation],
@@ -149,13 +149,9 @@ export default function Chat() {
   }, []);
 
   return (
-    <div
-      className={`flex flex-col sm:mt-0 sm:justify-center items-center`}
-    >
+    <div className={`flex flex-col sm:mt-0 sm:justify-center items-center`}>
       <div className={`bg-gray-100 p-6 sm:p-8 lg:p-12 rounded-3xl`}>
-        <div
-          className="overflow-y-auto mb-4 scroll-smooth h-64 lg:h-96 w-72 sm:w-96"
-        >
+        <div className="overflow-y-auto mb-4 scroll-smooth h-64 lg:h-96 w-72 sm:w-96">
           <div className="h-full">
             {messages
               .filter((m) => m.content)
@@ -180,7 +176,9 @@ export default function Chat() {
             value={input}
             onChange={handleInputChange}
           />
-          <Button type="submit" className="text-sm sm:text-base">Send</Button>
+          <Button type="submit" className="text-sm sm:text-base">
+            Send
+          </Button>
         </form>
       </div>
     </div>
