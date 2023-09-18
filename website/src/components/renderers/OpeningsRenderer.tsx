@@ -4,11 +4,11 @@ import { GalleryProvider } from "../../providers/FileGalleryProvider";
 import { useSession } from "../../providers/OddSessionProvider";
 import { PgnProvider } from "../../providers/PgnProvider";
 import { StockfishProvider } from "../../providers/StockfishProvider";
-import { OpenningsBoard } from "../chess/OpenningsBoard";
+import { OpeningsBoard } from "../chess/OpeningsBoard";
 import { LandingPage } from "../display/LandingPage";
 import { useSidebar } from "../../providers/SidebarProvider";
 
-export const OpenningsRenderer = () => {
+export const OpeningsRenderer = () => {
   const { isConnected } = useSession();
   const { expanded } = useSidebar();
 
@@ -23,8 +23,8 @@ export const OpenningsRenderer = () => {
                   <div
                     className={`h-screen ${expanded ? "md:ml-72" : "md:ml-20"}`}
                   >
-                    <div className="flex flex-col pt-12 lg:pt-0 lg:flex-row h-full w-full space-y-6 lg:space-y-0 lg:space-x-32 justify-center items-center">
-                      <OpenningsBoard />
+                    <div className="flex flex-col pt-14 sm:pt-8 lg:pt-0 lg:flex-row w-full space-y-8 lg:space-y-0 lg:space-x-32 lg:h-full justify-center items-center">
+                      <OpeningsBoard />
                       <Chat />
                     </div>
                   </div>

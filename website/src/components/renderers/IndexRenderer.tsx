@@ -39,7 +39,7 @@ export const IndexRenderer = () => {
                 {/* <DiscoveryBoard /> */}
                 <LandingPage
                   link="/play"
-                  header="Your own personal chess coach"
+                  header="Your own personal chess tutor"
                   subText="Training with Chesski will help you identify and improve your weaknesses while you learn new chess concepts"
                 />
               </ChessboardProvider>
@@ -50,7 +50,7 @@ export const IndexRenderer = () => {
         <div className="flex items-center h-full">
           <LandingPage
             link="/play"
-            header="Your own personal chess coach"
+            header="Your own personal chess tutor"
             subText="Training with Chesski will help you identify and improve your weaknesses while you learn new chess concepts"
           />
         </div>

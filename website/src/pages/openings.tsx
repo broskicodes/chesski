@@ -1,13 +1,13 @@
 import type { NextPage } from "next";
 import { Page } from "../components/display/Page";
-import { OpenningsRenderer } from "../components/renderers/OpenningsRenderer";
+import { OpeningsRenderer } from "../components/renderers/OpeningsRenderer";
 
-export const runtime = "experimental-edge";
+// export const runtime = "experimental-edge";
 
 const Home: NextPage = () => {
   return (
     <Page>
-      <OpenningsRenderer />
+      <OpeningsRenderer />
     </Page>
   );
 };

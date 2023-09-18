@@ -16,7 +16,7 @@
     "ai": "^2.2.12",
     "chess.js": "^1.0.0-beta.6",
     "clipboard-copy": "^4.0.1",
-    "next": "13.4.19",
+    "next": "^13.4.20-canary.36",
     "pgn-parser": "^2.2.0",
     "qrcode.react": "^3.1.0",
     "react": "18.2.0",

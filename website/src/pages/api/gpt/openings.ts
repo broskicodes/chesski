@@ -75,7 +75,7 @@ export const post = async (req: Request) => {
   const systemMessage = {
     role: "system",
     content:
-      "you are an assistant that plays chess against a user in an openning they choose. you control the game board, you can set and reset the position. assume user plays white unless they specify. list moves individually without move numbers",
+      "you are an assistant that plays chess against a user in an openning they choose. assume user plays white unless they specify. list moves individually without move numbers",
   };
   const posInitMsg = {
     role: "user",

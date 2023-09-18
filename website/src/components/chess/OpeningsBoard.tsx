@@ -1,11 +1,12 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useChessboard } from "../../providers/ChessboardProvider";
-import { useSidebar } from "../../providers/SidebarProvider";
+import { ScreenSize, ScreenSizeBoardMap, useSidebar } from "../../providers/SidebarProvider";
 import { CustomBoard } from "./CustomBoard";
 
-export const OpenningsBoard = () => {
+export const OpeningsBoard = () => {
   const { addArrows, addHighlightedSquares, resetHighlightedMoves } =
     useChessboard();
+  const { screenSize } = useSidebar();
   const [boardSize, setBoardSize] = useState(512);
 
   const clearCache = useCallback(() => {
@@ -13,6 +14,10 @@ export const OpenningsBoard = () => {
     addArrows([], true);
     resetHighlightedMoves([]);
   }, [resetHighlightedMoves, addArrows, addHighlightedSquares]);
+
+  useEffect(() => {
+    setBoardSize(ScreenSizeBoardMap[screenSize ?? ScreenSize.Mobile]);
+  }, [screenSize]);
 
   return (
     <div

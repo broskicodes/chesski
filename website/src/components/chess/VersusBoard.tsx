@@ -16,7 +16,7 @@ import { Hint1Icon } from "../icons/Hint1Icon";
 import { Hint2Icon } from "../icons/Hint2Icon";
 import { Tooltip } from "../display/Tooltip";
 import { StatusIcon } from "../icons/StatusIcon";
-import { useSidebar } from "../../providers/SidebarProvider";
+import { ScreenSize, ScreenSizeBoardMap, useSidebar } from "../../providers/SidebarProvider";
 import { CustomBoard } from "./CustomBoard";
 
 const BOT = "bot";
@@ -48,7 +48,7 @@ export const VersusBoard = () => {
     getGameStatus,
     getMoveSuggestions,
   } = useStockfish();
-  const { expanded } = useSidebar();
+  const { expanded, screenSize } = useSidebar();
 
   const [botSearchFinished, setBotSearchFinished] = useState(false);
   const [engineSearchFinished, setEngineSearchFinished] = useState(false);
@@ -141,22 +141,6 @@ export const VersusBoard = () => {
   }, [turn, orientation, startSearch, engineSearchFinished]);
 
   useEffect(() => {
-    setBoardSize(
-      window.innerWidth >= 640 && window.innerHeight >= 640 ? 512 : 368,
-    );
-    setIconSize(
-      window.innerWidth >= 640 && window.innerHeight >= 640 ? 1.3 : 1,
-    );
-
-    const resizeHandler = () => {
-      setBoardSize(
-        window.innerWidth >= 640 && window.innerHeight >= 640 ? 512 : 368,
-      );
-      setIconSize(
-        window.innerWidth >= 640 && window.innerHeight >= 640 ? 1.3 : 1,
-      );
-    };
-
     const moveHandler = (event: Event) => {
       const { engineName, move } = (event as CustomEvent).detail;
       if (engineName === BOT) {
@@ -181,16 +165,21 @@ export const VersusBoard = () => {
       }
     };
 
-    window.addEventListener("resize", resizeHandler);
     window.addEventListener("newBestMove", moveHandler);
     window.addEventListener("maxDepthReached", depthHandler);
 
     return () => {
-      window.removeEventListener("resize", resizeHandler);
       window.removeEventListener("newBestMove", moveHandler);
       window.removeEventListener("maxDepthReached", depthHandler);
     };
   }, []);
+
+  useEffect(() => {
+    setBoardSize(ScreenSizeBoardMap[screenSize ?? ScreenSize.Mobile]);
+    setIconSize(
+      screenSize === ScreenSize.Mobile ? 1 : 1.3,
+    );
+  }, [screenSize]);
 
   useEffect(() => {
     const keyboardHandler = (event: Event) => {
@@ -285,11 +274,11 @@ export const VersusBoard = () => {
 
   return (
     <div
-      className={`flex flex-col h-full mt-8 sm:mt-0 sm:justify-center ${
+      className={`flex flex-col h-full mt-14 sm:mt-0 sm:justify-center ${
         expanded ? "md:ml-72" : "md:ml-20"
       } items-center`}
     >
-      <div className="w-fit">
+      <div className="w-fit flex flex-col">
         <div className="flex flex-col mb-12 space-y-4 w-full">
           <div className="flex flex-row space-x-2">
             <label htmlFor="lvlSelect" className="font-bold ">
@@ -321,7 +310,7 @@ export const VersusBoard = () => {
               <p className="font-bold">Set position/continuation: </p>
               <input
                 type={"text"}
-                className="grow"
+                className="grow border"
                 value={continuation}
                 placeholder="Enter fen or list of moves"
                 onChange={({ target }) => {
@@ -337,7 +326,7 @@ export const VersusBoard = () => {
             </button>
           </div>
         </div>
-        <div>
+        <div className="mx-auto">
           <CustomBoard clearCache={clearCache} boardSize={boardSize} />
         </div>
         <div className="flex flex-row w-full mt-4 justify-between">
