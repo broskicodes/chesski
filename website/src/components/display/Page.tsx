@@ -7,6 +7,7 @@ import { Sidebar } from "./Sidebar";
 import { useEffect, useState } from "react";
 import { BottomNav } from "./BottonNav";
 import { SidebarProvider } from "../../providers/SidebarProvider";
+import { BuyMeACoffee } from "./BuyMeACoffee";
 
 export const Page = ({ children }: PropsWithChildren) => {
   return (
@@ -19,6 +20,7 @@ export const Page = ({ children }: PropsWithChildren) => {
           <SidebarProvider>
             <Sidebar />
             {children}
+            <BuyMeACoffee />
           </SidebarProvider>
         </SessionProvider>
       </NotificationProvider>

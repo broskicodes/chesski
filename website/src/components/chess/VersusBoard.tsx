@@ -288,7 +288,7 @@ export const VersusBoard = () => {
             </label>
             <select
               id="lvlSlelect"
-              className="w-40 rounded-md"
+              className="w-40 rounded-md text-sm"
               value={skillLvl}
               onChange={({ target }) => {
                 if (setEngineSkillLvl(BOT, target.value as SkillLevel)) {
@@ -312,7 +312,7 @@ export const VersusBoard = () => {
               <p className="font-bold">Set position/continuation: </p>
               <input
                 type={"text"}
-                className="grow border"
+                className="grow border rounded-sm text-xs lg:text-base"
                 value={continuation}
                 placeholder="Enter fen or list of moves"
                 onChange={({ target }) => {
