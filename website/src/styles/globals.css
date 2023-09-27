@@ -28,3 +28,20 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 0em;
+}
+
+/* .custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: transparent;
+} */
+
+/* Hide scrollbar for Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin;
+}
+/* 
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+} */

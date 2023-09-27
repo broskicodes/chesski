@@ -82,12 +82,14 @@ export const post = async (req: Request) => {
     content: `moves played in the current game: ${moves.join(" ")}`,
   };
 
+  const newMsgs = [systemMessage, posInitMsg, ...messages];
+
   // Request the OpenAI API for the response based on the prompt
   const response = await openai.chat.completions.create({
     model: "gpt-3.5-turbo",
     stream: true,
-    messages: [systemMessage, posInitMsg, ...messages],
-    max_tokens: 500,
+    messages: newMsgs,
+    // max_tokens: 500,
     temperature: 0,
     functions: functionDefinitions,
     function_call: "auto",
