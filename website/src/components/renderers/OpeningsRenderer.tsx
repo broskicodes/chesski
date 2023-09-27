@@ -7,6 +7,7 @@ import { StockfishProvider } from "../../providers/StockfishProvider";
 import { OpeningsBoard } from "../chess/OpeningsBoard";
 import { LandingPage } from "../display/LandingPage";
 import { useSidebar } from "../../providers/SidebarProvider";
+import { GptProvider } from "../../providers/GptProvider";
 
 export const OpeningsRenderer = () => {
   const { isConnected } = useSession();
@@ -24,8 +25,10 @@ export const OpeningsRenderer = () => {
                     className={`h-screen ${expanded ? "md:ml-72" : "md:ml-20"}`}
                   >
                     <div className="flex flex-col pt-14 sm:pt-8 lg:pt-0 lg:flex-row w-full space-y-8 lg:space-y-0 lg:space-x-32 lg:h-full justify-center items-center">
-                      <OpeningsBoard />
-                      <Chat />
+                      <GptProvider>
+                        <OpeningsBoard />
+                        <Chat />
+                      </GptProvider>
                     </div>
                   </div>
                 </StockfishProvider>
