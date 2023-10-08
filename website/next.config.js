@@ -9,7 +9,7 @@ module.exports =
   async headers() {
     return [
       {
-        source: '/(.*)', // Match all routes
+        source: '/link-device/(.*)',
         headers: [
           {
             key: 'Cross-Origin-Opener-Policy',
