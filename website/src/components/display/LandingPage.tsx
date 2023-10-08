@@ -44,23 +44,33 @@ export const LandingPage = ({ header, subText, link }: Props) => {
       >
         {subText}
       </div>
-      {isConnected() ? (
-        <Button
-          onClick={() => {
-            router.push(link);
-          }}
-        >
-          Start Training
-        </Button>
-      ) : (
-        <Button
-          onClick={() => {
-            setShowModal(true);
-          }}
-        >
-          Get Started
-        </Button>
-      )}
+        {isConnected() ? (
+          <div className="flex flex-row space-x-4">
+          <Button
+            onClick={() => {
+              router.push("/preorder")
+            }}
+          >
+            Pre-Order
+          </Button>
+          <Button
+            inverted={true}
+            onClick={() => {
+              router.push(link);
+            }}
+          >
+            Try the Demo
+          </Button>
+          </div>
+        ) : (
+          <Button
+            onClick={() => {
+              setShowModal(true);
+            }}
+          >
+            Get Started
+          </Button>
+        )}
     </div>
   );
 };

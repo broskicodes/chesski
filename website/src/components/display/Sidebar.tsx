@@ -9,6 +9,7 @@ import { MenuIcon } from "../icons/MenuIcon";
 import { useSidebar } from "../../providers/SidebarProvider";
 import Link from "next/link";
 import { TwitterIcon } from "../icons/TwitterIcon";
+import { PreorderIcon } from "../icons/PreorderIcon";
 
 export const Sidebar = ({ children }: PropsWithChildren) => {
   const { isConnected, username, disconnect } = useSession();
@@ -82,6 +83,13 @@ export const Sidebar = ({ children }: PropsWithChildren) => {
             {isConnected() && (
               <div className={`absolute bottom-20`}>
                 <SidebarItem
+                  icon={PreorderIcon({ height: 1.5 })}
+                  text={"Pre-Order"}
+                  handleClick={() => {
+                    router.push("/preorder");
+                  }}
+                />
+                <SidebarItem
                   icon={DeviceLinkIcon({ height: 1.5 })}
                   text={"Link Device"}
                   handleClick={() => {
@@ -149,7 +157,7 @@ export const SidebarItem = ({
     >
       {icon}
       <span
-        className={`overflow-hidden transition-all ${
+        className={`overflow-hidden transition-all whitespace-nowrap ${
           expanded ? "w-52 ml-3" : "w-0"
         }`}
       >
