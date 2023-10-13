@@ -1,15 +1,15 @@
+import { useRouter } from "next/router";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSession } from "../../providers/OddSessionProvider";
 import { ScreenSize, useSidebar } from "../../providers/SidebarProvider";
+import { Button } from "../display/Button";
 import { LandingPage } from "../display/LandingPage";
 
-interface Props {
-  stripeApiKey: string
-}
-
-export const PreorderRenderer = ({ stripeApiKey }: Props) => {
-  const { isConnected, username } = useSession();
+export const PreorderRenderer = () => {
+  const { isConnected } = useSession();
   const { expanded, screenSize } = useSidebar();
-
+  const router = useRouter();
+  
   return (
     <div className="flex flex-col h-screen">
       {isConnected() ? (
@@ -23,14 +23,12 @@ export const PreorderRenderer = ({ stripeApiKey }: Props) => {
             </p>
           </div>
           <div>
-          { /* @ts-ignore */ }
-          <stripe-buy-button
-            buy-button-id="buy_btn_1NymqIDog9Q5CRysfXu3lLaf"
-            publishable-key={stripeApiKey}
-            client-reference-id={username}
-          >
-          { /* @ts-ignore */ }
-          </stripe-buy-button>
+            <Button onClick={() => {
+              router.push("/preorder/pay")
+            }}
+            >
+              {"Donate"}
+            </Button>
           </div>
         </div>
       ) : (

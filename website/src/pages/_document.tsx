@@ -4,9 +4,6 @@ class MyDocument extends Document {
   render() {
     return (
       <Html lang="en">
-        <script async
-          src="https://js.stripe.com/v3/buy-button.js">
-        </script>
         <Head />
         <body>
           <Main />

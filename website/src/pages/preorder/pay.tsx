@@ -1,8 +1,8 @@
 import "dotenv/config";
 
 import type { GetServerSidePropsContext, NextPage } from "next";
-import { Page } from "../components/display/Page";
-import { PreorderRenderer } from "../components/renderers/PreorderRenderer";
+import { Page } from "../../components/display/Page";
+import { CheckoutRenderer } from "../../components/renderers/CheckoutRenderer";
 
 interface Props {
   stripeApiKey: string
@@ -18,7 +18,7 @@ export async function getServerSideProps(_context: GetServerSidePropsContext) {
 const Home = ({ stripeApiKey }: Props) => {
   return (
     <Page>
-      <PreorderRenderer stripeApiKey={stripeApiKey} />
+      <CheckoutRenderer stripeApiKey={stripeApiKey} />
     </Page>
   );
 };
