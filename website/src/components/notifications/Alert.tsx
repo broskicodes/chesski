@@ -7,7 +7,7 @@ interface Props {
 
 const AlertComp = ({ alert }: Props) => {
   return (
-    <div className="flex flex-col justify-center items-center h-full">
+    <div className="flex flex-col justify-center items-center h-full fixed inset-0 z-50">
       <div
         className={`bg-white ${
           alert.title ? "h-64" : "h-48"

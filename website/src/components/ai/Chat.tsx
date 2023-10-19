@@ -3,14 +3,29 @@
 import { Button } from "../display/Button";
 import { ChatAction, ActionType } from "./ChatAction";
 import { useGpt } from "../../providers/GptProvider";
+import { PropsWithChildren, useMemo } from "react";
+import { SizedDiv } from "../display/SizedDiv";
+import { ScreenSize, useSidebar } from "../../providers/SidebarProvider";
 
-export default function Chat() {
+export const Chat = ({ children }: PropsWithChildren) => {
   const { messages, input, submit, updateInput } = useGpt();
+  const { screenSize, screenWidth } = useSidebar();
+
+  const width = useMemo(() => {
+    switch (screenSize) {
+      case ScreenSize.Mobile:
+        return screenWidth - 80;
+      case ScreenSize.Tablet:
+        return 40;
+      case ScreenSize.Desktop:
+        return 52;
+    }
+  }, [screenSize, screenWidth]);
 
   return (
     <div className={`flex flex-col sm:mt-0 sm:justify-center items-center`}>
       <div className={`bg-gray-100 p-6 sm:p-8 lg:p-12 rounded-3xl`}>
-        <div className="overflow-y-auto mb-4 scroll-smooth h-64 lg:h-96 w-72 sm:w-96">
+        <div className="overflow-y-auto mb-4 scroll-smooth h-64 ">
           <div className="h-full">
             {messages.length > 0 &&
               messages
@@ -28,37 +43,23 @@ export default function Chat() {
                     </div>
                   );
                 })}
-            {!(messages.length > 0) && (
-              <ChatAction type={ActionType.Default} defaultDisplay={true} />
-            )}
-            <div>
-              <ChatAction
-                type={ActionType.ChooseOpening}
-                defaultDisplay={false}
-              />
-              <ChatAction
-                type={ActionType.ChooseOption}
-                defaultDisplay={false}
-              />
-            </div>
+            {children}
           </div>
         </div>
-
-        <form
-          className="flex flex-row space-x-3 w-72 sm:w-96"
-          onSubmit={submit}
-        >
-          <input
-            className="border grow text-sm sm:text-base"
-            placeholder="Enter Message"
-            value={input}
-            onChange={updateInput}
-          />
-          <Button type="submit" className="text-sm sm:text-base">
-            Send
-          </Button>
-        </form>
+        <SizedDiv width={width} px={screenSize === ScreenSize.Mobile}>
+          <form className="flex flex-row space-x-3" onSubmit={submit}>
+            <input
+              className="border grow text-sm sm:text-base"
+              placeholder="Enter Message"
+              value={input}
+              onChange={updateInput}
+            />
+            <Button type="submit" className="text-sm sm:text-base">
+              Send
+            </Button>
+          </form>
+        </SizedDiv>
       </div>
     </div>
   );
-}
+};

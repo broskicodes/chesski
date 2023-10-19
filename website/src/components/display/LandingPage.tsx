@@ -44,33 +44,33 @@ export const LandingPage = ({ header, subText, link }: Props) => {
       >
         {subText}
       </div>
-        {isConnected() ? (
-          <div className="flex flex-row space-x-4">
-          <Button
+      {isConnected() ? (
+        <div className="flex flex-row space-x-4">
+          {/* <Button
             onClick={() => {
-              router.push("/preorder")
+              router.push("/preorder");
             }}
           >
             Pre-Order
-          </Button>
+          </Button> */}
           <Button
-            inverted={true}
+            // inverted={true}
             onClick={() => {
               router.push(link);
             }}
           >
-            Try the Demo
-          </Button>
-          </div>
-        ) : (
-          <Button
-            onClick={() => {
-              setShowModal(true);
-            }}
-          >
             Get Started
           </Button>
-        )}
+        </div>
+      ) : (
+        <Button
+          onClick={() => {
+            setShowModal(true);
+          }}
+        >
+          Sign Up
+        </Button>
+      )}
     </div>
   );
 };

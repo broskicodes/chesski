@@ -1,4 +1,4 @@
-import { PaymentElement } from '@stripe/react-stripe-js';
+import { PaymentElement } from "@stripe/react-stripe-js";
 
 export const CheckoutForm = () => {
   return (
@@ -8,4 +8,3 @@ export const CheckoutForm = () => {
     </form>
   );
 };
-

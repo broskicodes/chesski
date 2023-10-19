@@ -14,6 +14,7 @@ export interface GptProviderContext {
   updateInput: (
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>,
   ) => void;
+  setBody: (body: { [key: string]: any }) => void;
 }
 
 export const GptContext = createContext<GptProviderContext>({
@@ -26,10 +27,13 @@ export const GptContext = createContext<GptProviderContext>({
   appendMessages: (_msgs) => {
     throw new Error("GptProvider not initialized");
   },
-  submit: () => {
+  submit: (_e, _opts) => {
     throw new Error("GptProvider not initialized");
   },
-  updateInput: () => {
+  updateInput: (_e) => {
+    throw new Error("GptProvider not initialized");
+  },
+  setBody: (_body) => {
     throw new Error("GptProvider not initialized");
   },
 });

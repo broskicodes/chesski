@@ -9,7 +9,7 @@ module.exports =
   async headers() {
     return [
       {
-        source: '/link-device/(.*)',
+        source: '/(.*)',
         headers: [
           {
             key: 'Cross-Origin-Opener-Policy',

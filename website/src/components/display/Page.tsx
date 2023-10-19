@@ -11,7 +11,7 @@ import { BuyMeACoffee } from "./BuyMeACoffee";
 
 export const Page = ({ children }: PropsWithChildren) => {
   return (
-    <div className={"font-mono"}>
+    <div className={"font-mono h-screen"}>
       <title>Chesski</title>
       <Analytics />
       <NotificationProvider>
@@ -20,7 +20,7 @@ export const Page = ({ children }: PropsWithChildren) => {
           <SidebarProvider>
             <Sidebar />
             {children}
-            <BuyMeACoffee />
+            {/* <BuyMeACoffee /> */}
           </SidebarProvider>
         </SessionProvider>
       </NotificationProvider>

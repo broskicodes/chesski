@@ -9,23 +9,37 @@ export const PreorderRenderer = () => {
   const { isConnected } = useSession();
   const { expanded, screenSize } = useSidebar();
   const router = useRouter();
-  
+
   return (
     <div className="flex flex-col h-screen">
       {isConnected() ? (
-        <div className={`flex flex-col items-center h-full justify-center space-y-16 ${
-          expanded ? "md:ml-72" : "md:ml-20"
-        }`}>
+        <div
+          className={`flex flex-col items-center h-full justify-center space-y-16 ${
+            expanded ? "md:ml-72" : "md:ml-20"
+          }`}
+        >
           <div className="flex flex-col items-center space-y-6 w-96 sm:w-max">
-            <h1 className="text-3xl font-semibold text-center">Become an Early Supporter</h1>
-            <p className="text-center w-" style={{ width: `${screenSize === ScreenSize.Mobile ? "20rem" : "30rem"}` }}>
-              {"Chesski is still in active development. Your early support and gernerosity will be rewarded with free access to the full version on release :)"}
+            <h1 className="text-3xl font-semibold text-center">
+              Become an Early Supporter
+            </h1>
+            <p
+              className="text-center w-"
+              style={{
+                width: `${
+                  screenSize === ScreenSize.Mobile ? "20rem" : "30rem"
+                }`,
+              }}
+            >
+              {
+                "Chesski is still in active development. Your early support and gernerosity will be rewarded with free access to the full version on release :)"
+              }
             </p>
           </div>
           <div>
-            <Button onClick={() => {
-              router.push("/preorder/pay")
-            }}
+            <Button
+              onClick={() => {
+                router.push("/preorder/pay");
+              }}
             >
               {"Donate"}
             </Button>
