@@ -13,24 +13,8 @@ import { PreorderIcon } from "../icons/PreorderIcon";
 
 export const Sidebar = ({ children }: PropsWithChildren) => {
   const { isConnected, username, disconnect } = useSession();
-  const { expanded, toggleExpanded } = useSidebar();
+  const { expanded, screenWidth, toggleExpanded } = useSidebar();
   const router = useRouter();
-
-  const [screenWidth, setScreenWidth] = useState(0);
-
-  useEffect(() => {
-    setScreenWidth(window.innerWidth);
-
-    const sizeChangeHandler = (_event: Event) => {
-      setScreenWidth(window.innerWidth);
-    };
-
-    window.addEventListener("resize", sizeChangeHandler);
-
-    return () => {
-      window.removeEventListener("resize", sizeChangeHandler);
-    };
-  }, []);
 
   return (
     <aside
@@ -39,7 +23,9 @@ export const Sidebar = ({ children }: PropsWithChildren) => {
     >
       {screenWidth < 640 && !expanded && (
         <button
-          onClick={toggleExpanded}
+          onClick={() => {
+            toggleExpanded();
+          }}
           className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 mt-4 ml-4"
         >
           <MenuIcon height={1.5} />
@@ -55,14 +41,25 @@ export const Sidebar = ({ children }: PropsWithChildren) => {
             >
               <Link href={"/"}>Chesski</Link>
             </div>
-            <button
-              onClick={toggleExpanded}
-              className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100"
-            >
-              <MenuIcon height={1.5} />
-            </button>
+            {screenWidth <= 640 && (
+              <button
+                onClick={() => {
+                  toggleExpanded();
+                }}
+                className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100"
+              >
+                <MenuIcon height={1.5} />
+              </button>
+            )}
+            {screenWidth > 640 && !expanded && (
+              <div className="flex items-center w-full">
+                <p className="text-center text-3xl font-bold w-full">
+                  <Link href={"/"}>C</Link>
+                </p>
+              </div>
+            )}
           </div>
-          <ul className={`flex-1 px-3 `}>
+          <ul className={`flex-1 px-3`}>
             <SidebarItem
               icon={PlayChessIcon({ height: 1.5 })}
               text={"Play Chesski"}
@@ -73,22 +70,22 @@ export const Sidebar = ({ children }: PropsWithChildren) => {
             />
             <SidebarItem
               icon={OpenningsIcon({ height: 1.5 })}
-              text={"Study Openings"}
-              active={router.route === "/openings"}
+              text={"Review Games"}
+              active={router.route.includes("review")}
               handleClick={() => {
-                router.route === "/openings" ? {} : router.push("/openings");
+                router.route === "/review" ? {} : router.push("/review");
               }}
             />
             {children}
             {isConnected() && (
               <div className={`absolute bottom-20`}>
-                <SidebarItem
+                {/* <SidebarItem
                   icon={PreorderIcon({ height: 1.5 })}
                   text={"Pre-Order"}
                   handleClick={() => {
                     router.push("/preorder");
                   }}
-                />
+                /> */}
                 <SidebarItem
                   icon={DeviceLinkIcon({ height: 1.5 })}
                   text={"Link Device"}

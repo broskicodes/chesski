@@ -17,18 +17,20 @@ export enum ScreenSize {
 export const ScreenSizeBoardMap: { [key in ScreenSize]: number } = {
   Mobile: 348,
   Tablet: 464,
-  Desktop: 512,
+  Desktop: 464,
 };
 
 export interface SidebarProviderContext {
   expanded: boolean;
   screenSize: ScreenSize | null;
-  toggleExpanded: () => void;
+  screenWidth: number;
+  toggleExpanded: (on?: boolean) => void;
 }
 
 const SidebarContext = createContext<SidebarProviderContext>({
   expanded: false,
   screenSize: null,
+  screenWidth: 0,
   toggleExpanded: () => {
     throw new Error("SidebarProvider not initialized");
   },
@@ -39,9 +41,10 @@ export const useSidebar = () => useContext(SidebarContext);
 export const SidebarProvider = ({ children }: PropsWithChildren) => {
   const [expanded, setExpanded] = useState(false);
   const [screenSize, setScreenSize] = useState<ScreenSize | null>(null);
+  const [screenWidth, setScreenWidth] = useState(0);
 
-  const toggleExpanded = useCallback(() => {
-    setExpanded((curr) => !curr);
+  const toggleExpanded = useCallback((on?: boolean) => {
+    setExpanded((curr) => on ?? !curr);
   }, []);
 
   const findScreenSize = useCallback(() => {
@@ -58,10 +61,20 @@ export const SidebarProvider = ({ children }: PropsWithChildren) => {
   }, []);
 
   useEffect(() => {
+    if (screenWidth > 1024) {
+      toggleExpanded(true);
+    } else {
+      toggleExpanded(false);
+    }
+  }, [screenWidth, toggleExpanded]);
+
+  useEffect(() => {
     findScreenSize();
+    setScreenWidth(window.innerWidth);
 
     const resizeHandler = () => {
       findScreenSize();
+      setScreenWidth(window.innerWidth);
     };
 
     window.addEventListener("resize", resizeHandler);
@@ -75,9 +88,10 @@ export const SidebarProvider = ({ children }: PropsWithChildren) => {
     () => ({
       expanded,
       screenSize,
+      screenWidth,
       toggleExpanded,
     }),
-    [expanded, screenSize, toggleExpanded],
+    [expanded, screenSize, screenWidth, toggleExpanded],
   );
 
   return (

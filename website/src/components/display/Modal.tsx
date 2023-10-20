@@ -9,8 +9,9 @@ interface ModalProps extends PropsWithChildren {
 export const Modal = ({ title, children }: ModalProps) => {
   return (
     <div className="flex flex-col justify-center items-center h-full fixed z-50 inset-0">
+      <div className="z-40 fixed inset-0 bg-gray-300/75" />
       <div
-        className={`bg-white h-64 w-96 rounded-2xl flex flex-col justify-center items-center relative`}
+        className={`bg-white h-64 w-96 rounded-2xl flex flex-col justify-center items-center relative z-50`}
       >
         <div className="w-full text-center absolute top-2">
           <p className="text-2xl font-bold">{title}</p>

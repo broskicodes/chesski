@@ -14,7 +14,11 @@ import { GptContext, GptProviderContext } from "./context";
 const BOT = "bot";
 // const ENGINE = "engine";
 
-export const GptProvider = ({ children }: PropsWithChildren) => {
+interface Props extends PropsWithChildren {
+  apiEndpoint: string;
+}
+
+export const GptProvider = ({ children, apiEndpoint }: Props) => {
   const {
     turn,
     game,
@@ -30,6 +34,7 @@ export const GptProvider = ({ children }: PropsWithChildren) => {
   const [botMove, setBotMove] = useState<string | null>(null);
   const [engineOn, setEngineOn] = useState(false);
   const [botSearchFinished, setBotSearchFinished] = useState(false);
+  const [bodyAttrs, setBodyAttr] = useState<{ [key: string]: any }>({});
 
   const setOpenningPositions = useCallback(
     (moves: string[], newOrientation: Player) => {
@@ -48,7 +53,29 @@ export const GptProvider = ({ children }: PropsWithChildren) => {
     [orientation, playContinuation, swapOrientation],
   );
 
-  const functionCallHandler: FunctionCallHandler = useCallback(
+  const gpt3FunctionCallHandler: FunctionCallHandler = useCallback(
+    async (_msgs, functionCall) => {
+      const args = JSON.parse(functionCall.arguments);
+
+      switch (functionCall.name) {
+        case "updateBoardPos": {
+          console.log(args);
+          break;
+        }
+      }
+    },
+    [],
+  );
+
+  const gpt3 = useChat({
+    api: "/api/gpt/review/functions",
+    body: {
+      ...bodyAttrs,
+    },
+    experimental_onFunctionCall: gpt3FunctionCallHandler,
+  });
+
+  const gpt4FunctionCallHandler: FunctionCallHandler = useCallback(
     async (_chatMessages, functionCall) => {
       // console.log(functionCall);
 
@@ -110,11 +137,15 @@ export const GptProvider = ({ children }: PropsWithChildren) => {
     handleSubmit,
     setMessages,
   } = useChat({
-    api: "/api/gpt/openings",
+    api: apiEndpoint,
     body: {
-      moves: game.history(),
+      ...bodyAttrs,
     },
-    experimental_onFunctionCall: functionCallHandler,
+    onFinish: (msg) => {
+      // console.log(msg);
+      gpt3.append(msg);
+    },
+    experimental_onFunctionCall: gpt4FunctionCallHandler,
   });
 
   const updateMessages = useCallback(
@@ -136,6 +167,10 @@ export const GptProvider = ({ children }: PropsWithChildren) => {
     [append, updateMessages, messages],
   );
 
+  const setBody = useCallback((body: { [key: string]: any }) => {
+    setBodyAttr(body);
+  }, []);
+
   const value: GptProviderContext = useMemo(
     () => ({
       input,
@@ -146,6 +181,7 @@ export const GptProvider = ({ children }: PropsWithChildren) => {
       appendMessages,
       submit: handleSubmit,
       updateInput: handleInputChange,
+      setBody,
     }),
     [
       input,
@@ -156,6 +192,7 @@ export const GptProvider = ({ children }: PropsWithChildren) => {
       handleInputChange,
       updateMessages,
       appendMessages,
+      setBody,
     ],
   );
 

@@ -1,4 +1,4 @@
-import Chat from "../ai/Chat";
+import { OpeningChat } from "../ai/OpeningChat";
 import { ChessboardProvider } from "../../providers/ChessboardProvider";
 import { GalleryProvider } from "../../providers/FileGalleryProvider";
 import { useSession } from "../../providers/OddSessionProvider";
@@ -25,9 +25,9 @@ export const OpeningsRenderer = () => {
                     className={`h-screen ${expanded ? "md:ml-72" : "md:ml-20"}`}
                   >
                     <div className="flex flex-col pt-14 sm:pt-8 lg:pt-0 lg:flex-row w-full space-y-8 lg:space-y-0 lg:space-x-32 lg:h-full justify-center items-center">
-                      <GptProvider>
+                      <GptProvider apiEndpoint="/api/gpt/openings">
                         <OpeningsBoard />
-                        <Chat />
+                        <OpeningChat />
                       </GptProvider>
                     </div>
                   </div>

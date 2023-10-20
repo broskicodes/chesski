@@ -1,13 +1,21 @@
+import { useEffect, useState } from "react";
 import { Chessboard } from "react-chessboard";
 import { useChessboard } from "../../providers/ChessboardProvider";
+import {
+  ScreenSize,
+  ScreenSizeBoardMap,
+  useSidebar,
+} from "../../providers/SidebarProvider";
 import { DarkSquares } from "../../utils/types";
 
 interface Props {
-  boardSize: number;
   clearCache: () => void;
 }
 
-export const CustomBoard = ({ clearCache, boardSize }: Props) => {
+export const CustomBoard = ({ clearCache }: Props) => {
+  const [boardSize, setBoardSize] = useState(512);
+
+  const { screenSize, screenWidth } = useSidebar();
   const {
     game,
     orientation,
@@ -20,6 +28,17 @@ export const CustomBoard = ({ clearCache, boardSize }: Props) => {
     addHighlightedSquares,
     resetHighlightedMoves,
   } = useChessboard();
+
+  useEffect(() => {
+    switch (screenSize) {
+      case ScreenSize.Mobile: {
+        setBoardSize(screenWidth - 36);
+        break;
+      }
+      default:
+        setBoardSize(ScreenSizeBoardMap[screenSize ?? ScreenSize.Mobile]);
+    }
+  }, [screenSize, screenWidth]);
 
   return (
     <Chessboard

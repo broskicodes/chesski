@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { usePgns } from "../../providers/PgnProvider";
-import { Moves } from "./Moves";
+// import { Moves } from "./Moves";
 import { Chess } from "chess.js";
 import { useChessboard } from "../../providers/ChessboardProvider";
 import { Button } from "../display/Button";
@@ -59,7 +59,7 @@ export const DiscoveryBoard = () => {
           Reset
         </Button>
       </div>
-      <Moves transpositions={transpositions} setNewTempPos={setNewTempPos} />
+      {/* <Moves transpositions={transpositions} setNewTempPos={setNewTempPos} /> */}
     </div>
   );
 };

@@ -28,6 +28,7 @@ export const Notifications = () => {
       ) : null}
       {alert ? (
         <div className="fixed z-50 inset-0">
+          <div className="z-40 fixed inset-0 bg-gray-300/75" />
           <Alert alert={alert} />
         </div>
       ) : null}

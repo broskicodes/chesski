@@ -1,12 +1,12 @@
 import { OpenAI } from "openai";
 import { OpenAIStream, StreamingTextResponse } from "ai";
-import { CompletionCreateParams } from "openai/resources/chat";
+import { ChatCompletionCreateParams } from "openai/resources/chat";
 
 export const runtime = "edge";
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY! });
 
-const functionDefinitions: CompletionCreateParams.Function[] = [
+const functionDefinitions: ChatCompletionCreateParams.Function[] = [
   {
     name: "setOpenningPosition",
     description: "set the position on the board to the desired openning",
@@ -99,6 +99,7 @@ export const post = async (req: Request) => {
   });
 
   // Convert the response into a friendly text-stream
+  // @ts-ignore
   const stream = OpenAIStream(response);
 
   // Respond with the stream

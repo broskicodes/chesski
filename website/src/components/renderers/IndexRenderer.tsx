@@ -36,9 +36,8 @@ export const IndexRenderer = () => {
           <GalleryProvider>
             <PgnProvider>
               <ChessboardProvider>
-                {/* <DiscoveryBoard /> */}
                 <LandingPage
-                  link="/play"
+                  link="/review"
                   header="Your own personal chess tutor"
                   subText="Training with Chesski will help you identify and improve your weaknesses while you learn new chess concepts"
                 />
@@ -49,7 +48,7 @@ export const IndexRenderer = () => {
       ) : (
         <div className="flex items-center h-full">
           <LandingPage
-            link="/play"
+            link="/review"
             header="Your own personal chess tutor"
             subText="Training with Chesski will help you identify and improve your weaknesses while you learn new chess concepts"
           />

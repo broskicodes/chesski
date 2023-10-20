@@ -9,19 +9,17 @@ import {
 } from "../../providers/StockfishProvider/context";
 import { Button } from "../display/Button";
 import { Square } from "react-chessboard/dist/chessboard/types";
-import { FlipBoardIcon } from "../icons/FlibBoardIcon";
-import { UndoArrowIcon } from "../icons/UndoArrowIcon";
-import { ResetIcon } from "../icons/ResetIcon";
-import { Hint1Icon } from "../icons/Hint1Icon";
-import { Hint2Icon } from "../icons/Hint2Icon";
-import { Tooltip } from "../display/Tooltip";
-import { StatusIcon } from "../icons/StatusIcon";
 import {
   ScreenSize,
   ScreenSizeBoardMap,
   useSidebar,
 } from "../../providers/SidebarProvider";
-import { CustomBoard } from "./CustomBoard";
+import { CustomBoard } from "./Board";
+import { BoardControl } from "./BoardControl";
+import { Tooltip } from "../display/Tooltip";
+import { Hint1Icon } from "../icons/Hint1Icon";
+import { Hint2Icon } from "../icons/Hint2Icon";
+import { StatusIcon } from "../icons/StatusIcon";
 
 const BOT = "bot";
 const ENGINE = "engine";
@@ -70,7 +68,6 @@ export const VersusBoard = () => {
     setBotSearchFinished(false);
     setEngineSearchFinished(false);
     addHighlightedSquares([], true);
-    setHintLvl(0);
     addArrows([], true);
     setSuggestedMoves(null);
     resetHighlightedMoves([]);
@@ -307,9 +304,15 @@ export const VersusBoard = () => {
               ))}
             </select>
           </div>
-          <div className="flex flex-col space-y-2 items-center w-full">
+          <form
+            className="flex flex-col space-y-2 items-center w-full"
+            onSubmit={(e) => {
+              e.preventDefault();
+              addContinuation();
+            }}
+          >
             <div className="space-x-2 flex flex-col md:flex-row w-full">
-              <p className="font-bold">Set position/continuation: </p>
+              <label className="font-bold">Set position/continuation: </label>
               <input
                 type={"text"}
                 className="grow border rounded-sm text-xs lg:text-base"
@@ -321,104 +324,61 @@ export const VersusBoard = () => {
               />
             </div>
             <button
+              type="submit"
               className="font-bold bg-slate-300 w-24 py-1 rounded-md hover:bg-slate-300/75"
-              onClick={addContinuation}
             >
               Update
             </button>
-          </div>
+          </form>
         </div>
         <div className="mx-auto">
-          <CustomBoard clearCache={clearCache} boardSize={boardSize} />
+          <CustomBoard clearCache={clearCache} />
         </div>
-        <div className="flex flex-row w-full mt-4 justify-between">
-          <div className="flex flex-row space-x-3">
-            <Tooltip content={"Flip Board"}>
-              <Button
-                className="grow"
-                onClick={() => {
-                  swapOrientation();
-                  clearCache();
-                }}
-              >
-                <FlipBoardIcon height={iconSize} />
-              </Button>
-            </Tooltip>
-            <Tooltip content={"Undo Move"}>
-              <Button
-                className="grow"
-                onClick={() => {
-                  const res = undo();
-                  if (res) {
-                    clearCache();
-                  }
-
-                  return res;
-                }}
-              >
-                <UndoArrowIcon height={iconSize} />
-              </Button>
-            </Tooltip>
-            <Tooltip content={"Reset Game"}>
-              <Button
-                className="grow"
-                onClick={() => {
-                  restartEngine(BOT);
-                  restartEngine(ENGINE);
-                  reset();
-                  clearCache();
-                }}
-              >
-                <ResetIcon height={iconSize} />
-              </Button>
-            </Tooltip>
-          </div>
-          <div className="flex flex-row space-x-3">
-            <Tooltip content={"Status"}>
-              <Button
-                className="grow"
-                onClick={() => {
-                  try {
-                    const [player, status] = getGameStatus(ENGINE);
-                    addNotification({
-                      msg: `${
-                        status === GameStatus.Equal ? "" : `${player} `
-                      }${status}`,
-                    });
-                  } catch (err) {
-                    addNotification({
-                      type: "error",
-                      msg: (err as Error).message,
-                    });
-                  }
-                }}
-              >
-                <StatusIcon height={iconSize} />
-              </Button>
-            </Tooltip>
-            <Tooltip content={`Hint ${hintLvl < 1 ? 1 : 2}`}>
-              <Button
-                className="grow"
-                onClick={() => {
-                  try {
-                    setHintLvl(hintLvl + 1);
-                  } catch (err) {
-                    addNotification({
-                      type: "error",
-                      msg: (err as Error).message,
-                    });
-                  }
-                }}
-              >
-                {hintLvl < 1 ? (
-                  <Hint1Icon height={iconSize} />
-                ) : (
-                  <Hint2Icon height={iconSize} />
-                )}
-              </Button>
-            </Tooltip>
-          </div>
-        </div>
+        <BoardControl clearCache={clearCache}>
+          <Tooltip content={"Status"}>
+            <Button
+              className="grow"
+              onClick={() => {
+                try {
+                  const [player, status] = getGameStatus(ENGINE);
+                  addNotification({
+                    msg: `${
+                      status === GameStatus.Equal ? "" : `${player} `
+                    }${status}`,
+                  });
+                } catch (err) {
+                  addNotification({
+                    type: "error",
+                    msg: (err as Error).message,
+                  });
+                }
+              }}
+            >
+              <StatusIcon height={iconSize} />
+            </Button>
+          </Tooltip>
+          <Tooltip content={`Hint ${hintLvl < 1 ? 1 : 2}`}>
+            <Button
+              className="grow"
+              onClick={() => {
+                try {
+                  setHintLvl(hintLvl + 1);
+                } catch (err) {
+                  addNotification({
+                    type: "error",
+                    msg: (err as Error).message,
+                  });
+                }
+              }}
+            >
+              {hintLvl < 1 ? (
+                <Hint1Icon height={iconSize} />
+              ) : (
+                <Hint2Icon height={iconSize} />
+              )}
+            </Button>
+          </Tooltip>
+        </BoardControl>
       </div>
     </div>
   );
