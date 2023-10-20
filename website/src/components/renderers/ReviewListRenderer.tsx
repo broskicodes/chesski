@@ -114,8 +114,8 @@ export const ReviewListRenderer = () => {
     <div className="h-full">
       {isConnected() ? (
         <div
-          className={`flex flex-col justify-center items-center h-full space-y-6 ${
-            expanded ? "md:ml-72" : "md:ml-20"
+        className={`flex flex-col pt-14 sm:pt-8 lg:pt-0 justify-center items-center h-full space-y-6 ${
+          expanded ? "md:ml-72" : "md:ml-20"
           }`}
         >
           <div>
@@ -134,7 +134,7 @@ export const ReviewListRenderer = () => {
                   setLichessName(target.value);
                 }}
               />
-              <Button type="submit" disabled={loading}>
+              <Button className="text-xs sm:text-sm" type="submit" disabled={loading}>
                 Search
               </Button>
             </form>
