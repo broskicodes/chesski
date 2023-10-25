@@ -12,7 +12,7 @@ interface Props {
   clearCache: () => void;
 }
 
-export const CustomBoard = ({ clearCache }: Props) => {
+export const Board = ({ clearCache }: Props) => {
   const [boardSize, setBoardSize] = useState(512);
 
   const { screenSize, screenWidth } = useSidebar();
@@ -61,6 +61,7 @@ export const CustomBoard = ({ clearCache }: Props) => {
 
         resetHighlightedMoves(game.moves({ square: sqr, verbose: true }));
         addHighlightedSquares([], true);
+        addArrows([], true);
       }}
       onSquareRightClick={(sqr) => {
         addHighlightedSquares([sqr], false);

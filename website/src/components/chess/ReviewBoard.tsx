@@ -2,7 +2,7 @@ import { Chess } from "chess.js";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Player, useChessboard } from "../../providers/ChessboardProvider";
 import { BoardControl } from "./BoardControl";
-import { CustomBoard } from "./Board";
+import { Board } from "./Board";
 import { MoveList } from "./MoveList";
 
 interface Props {
@@ -82,7 +82,7 @@ export const ReviewBoard = ({ pgn }: Props) => {
       {/* <div>{isLoading ? <h2>Loading</h2> : null}</div> */}
       <div className="flex flex-col space-y-6 items-center sm:flex-row sm:space-x-8 sm:space-y-0 lg:space-x-16">
         <div>
-          <CustomBoard clearCache={clearCache} />
+          <Board clearCache={clearCache} />
           {/* <BoardControl clearCache={clearCache} /> */}
         </div>
         <MoveList

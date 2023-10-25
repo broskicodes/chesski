@@ -51,11 +51,10 @@ export const post = async (req: Request) => {
 the player may ask you about a position they are seeing on a chess board. In this case use the provided fen string to visualize the position and assist the player.
 let the player direct conversation and keep your responses short and to the point.
 
-this is the game, the user played as ${orientation}
-
+the user played as ${orientation}. here is the pgn for the game:
 ${fullPgn}
 
-position on player's board: ${boardPos}`,
+here is the position on user's board: ${boardPos}`,
   };
 
   // console.log()

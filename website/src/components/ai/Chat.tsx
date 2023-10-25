@@ -3,7 +3,7 @@
 import { Button } from "../display/Button";
 import { ChatAction, ActionType } from "./ChatAction";
 import { useGpt } from "../../providers/GptProvider";
-import { PropsWithChildren, useMemo } from "react";
+import { PropsWithChildren, useEffect, useMemo } from "react";
 import { SizedDiv } from "../display/SizedDiv";
 import { ScreenSize, useSidebar } from "../../providers/SidebarProvider";
 
@@ -14,17 +14,21 @@ export const Chat = ({ children }: PropsWithChildren) => {
   const width = useMemo(() => {
     switch (screenSize) {
       case ScreenSize.Mobile:
-        return screenWidth - 80;
+        return screenWidth - 48;
       case ScreenSize.Tablet:
-        return 40;
+        return 48;
       case ScreenSize.Desktop:
-        return 52;
+        return 64;
     }
   }, [screenSize, screenWidth]);
 
   return (
     <div className={`flex flex-col sm:mt-0 sm:justify-center items-center`}>
-      <div className={`bg-gray-100 p-6 sm:p-8 lg:p-12 rounded-3xl`}>
+      <SizedDiv
+        width={width}
+        px={screenSize === ScreenSize.Mobile}
+        className={`bg-gray-100 p-6 sm:p-8 lg:p-12 rounded-3xl`}
+      >
         <div className="overflow-y-auto mb-4 scroll-smooth h-64 ">
           <div className="h-full">
             {messages.length > 0 &&
@@ -46,7 +50,7 @@ export const Chat = ({ children }: PropsWithChildren) => {
             {children}
           </div>
         </div>
-        <SizedDiv width={width} px={screenSize === ScreenSize.Mobile}>
+        <div>
           <form className="flex flex-row space-x-3" onSubmit={submit}>
             <input
               className="border grow text-sm sm:text-base"
@@ -58,8 +62,8 @@ export const Chat = ({ children }: PropsWithChildren) => {
               Send
             </Button>
           </form>
-        </SizedDiv>
-      </div>
+        </div>
+      </SizedDiv>
     </div>
   );
 };

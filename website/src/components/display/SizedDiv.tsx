@@ -11,8 +11,14 @@ export const SizedDiv = ({ children, className, width, height, px }: Props) => {
   const size = useMemo(() => {
     const sizeProps: { [key: string]: string | undefined } = {};
 
-    sizeProps["height"] = height ? `${height}${px ? "px" : "em"}` : undefined;
-    sizeProps["width"] = width ? `${width}${px ? "px" : "em"}` : undefined;
+    if (height) {
+      sizeProps["minHeight"] = `${height}${px ? "px" : "em"}`;
+      sizeProps["maxHeight"] = `${height}${px ? "px" : "em"}`;
+    }
+    if (width) {
+      sizeProps["minWidth"] = `${width}${px ? "px" : "em"}`;
+      sizeProps["maxWidth"] = `${width}${px ? "px" : "em"}`;
+    }
 
     return sizeProps;
   }, [height, width, px]);
