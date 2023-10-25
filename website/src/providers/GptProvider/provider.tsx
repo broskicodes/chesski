@@ -1,4 +1,4 @@
-import { FunctionCallHandler, Message } from "ai";
+import { FunctionCallHandler, Message, nanoid } from "ai";
 import { useChat } from "ai/react";
 import {
   PropsWithChildren,
@@ -9,7 +9,7 @@ import {
 } from "react";
 import { Player, useChessboard } from "../ChessboardProvider";
 import { SkillLevel, useStockfish } from "../StockfishProvider";
-import { GptContext, GptProviderContext } from "./context";
+import { GptContext, GptProviderContext, Suggestion } from "./context";
 
 const BOT = "bot";
 // const ENGINE = "engine";
@@ -35,6 +35,7 @@ export const GptProvider = ({ children, apiEndpoint }: Props) => {
   const [engineOn, setEngineOn] = useState(false);
   const [botSearchFinished, setBotSearchFinished] = useState(false);
   const [bodyAttrs, setBodyAttr] = useState<{ [key: string]: any }>({});
+  const [suggestions, setSugguestions] = useState<Suggestion[]>([]);
 
   const setOpenningPositions = useCallback(
     (moves: string[], newOrientation: Player) => {
@@ -60,6 +61,12 @@ export const GptProvider = ({ children, apiEndpoint }: Props) => {
       switch (functionCall.name) {
         case "updateBoardPos": {
           console.log(args);
+          break;
+        }
+        case "generateUserSuggestions": {
+          console.log(args);
+          setSugguestions(args["suggestions"]);
+
           break;
         }
       }
@@ -136,13 +143,21 @@ export const GptProvider = ({ children, apiEndpoint }: Props) => {
     handleInputChange,
     handleSubmit,
     setMessages,
+    setInput,
   } = useChat({
     api: apiEndpoint,
     body: {
       ...bodyAttrs,
     },
+    onResponse: (_res) => {
+      setSugguestions([]);
+    },
     onFinish: (msg) => {
-      // console.log(msg);
+      // console.log(messages, input);
+      gpt3.setMessages([
+        ...messages,
+        { id: nanoid(), role: "user", content: input },
+      ]);
       gpt3.append(msg);
     },
     experimental_onFunctionCall: gpt4FunctionCallHandler,
@@ -171,28 +186,50 @@ export const GptProvider = ({ children, apiEndpoint }: Props) => {
     setBodyAttr(body);
   }, []);
 
+  const getInitialSuggestions = useCallback(() => {
+    if (messages.length > 0) return;
+
+    // console.log("suh");
+
+    const msg: Message = {
+      id: nanoid(),
+      role: "assistant",
+      content: "What would you like to know about the game?",
+    };
+
+    updateMessages([msg]);
+
+    gpt3.append(msg);
+  }, [gpt3, messages, updateMessages]);
+
   const value: GptProviderContext = useMemo(
     () => ({
       input,
       messages,
       isLoading,
       engineOn,
+      suggestions,
+      setInput,
       updateMessages,
       appendMessages,
       submit: handleSubmit,
       updateInput: handleInputChange,
       setBody,
+      getInitialSuggestions,
     }),
     [
       input,
       messages,
       isLoading,
       engineOn,
+      suggestions,
+      setInput,
       handleSubmit,
       handleInputChange,
       updateMessages,
       appendMessages,
       setBody,
+      getInitialSuggestions,
     ],
   );
 

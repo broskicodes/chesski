@@ -21,8 +21,8 @@ interface Game {
   id: string;
   perf: string;
   players: {
-    white: PlayerInfo;
-    black: PlayerInfo;
+    white: PlayerInfo | null;
+    black: PlayerInfo | null;
   };
   winner: Player;
   date: number;
@@ -80,18 +80,24 @@ export const ReviewListRenderer = () => {
         .map((g) => {
           const game = JSON.parse(g);
 
+          console.log(game.players);
+
           return {
             id: game.id,
             perf: game.perf,
             players: {
-              white: {
-                username: game.players.white.user.id,
-                rating: game.players.white.rating,
-              },
-              black: {
-                username: game.players.black.user.id,
-                rating: game.players.black.rating,
-              },
+              white: game.players.white.user
+                ? {
+                    username: game.players.white.user.id,
+                    rating: game.players.white.rating,
+                  }
+                : null,
+              black: game.players.black.user
+                ? {
+                    username: game.players.black.user.id,
+                    rating: game.players.black.rating,
+                  }
+                : null,
             },
             winner: game.winner,
             date: game.createdAt,
@@ -100,22 +106,22 @@ export const ReviewListRenderer = () => {
 
       setGames(gameObjs);
     } catch (e) {
-      addNotification({ msg: `No games found for user "${lichessName}"`, type: "error" })
+      console.error(e);
+      addNotification({
+        msg: `No games found for user "${lichessName}"`,
+        type: "error",
+      });
     }
 
     setLoading(false);
   }, [lichessName]);
 
-  useEffect(() => {
-    console.log(games);
-  }, [games]);
-
   return (
     <div className="h-full">
       {isConnected() ? (
         <div
-        className={`flex flex-col pt-14 sm:pt-8 lg:pt-0 justify-center items-center h-full space-y-6 ${
-          expanded ? "md:ml-72" : "md:ml-20"
+          className={`flex flex-col pt-14 sm:pt-8 lg:pt-0 justify-center items-center h-full space-y-6 ${
+            expanded ? "md:ml-72" : "md:ml-20"
           }`}
         >
           <div>
@@ -134,7 +140,11 @@ export const ReviewListRenderer = () => {
                   setLichessName(target.value);
                 }}
               />
-              <Button className="text-xs sm:text-sm" type="submit" disabled={loading}>
+              <Button
+                className="text-xs sm:text-sm"
+                type="submit"
+                disabled={loading}
+              >
                 Search
               </Button>
             </form>
@@ -175,12 +185,16 @@ export const ReviewListRenderer = () => {
                       <td>
                         <div className="flex flex-col py-1">
                           <p>
-                            W: {g.players.white.username} (
-                            {g.players.white.rating})
+                            W:{" "}
+                            {g.players.white
+                              ? `${g.players.white?.username} (${g.players.white?.rating})`
+                              : "guest"}
                           </p>
                           <p>
-                            B: {g.players.black.username} (
-                            {g.players.black.rating})
+                            B:{" "}
+                            {g.players.black
+                              ? `${g.players.black?.username} (${g.players.black?.rating})`
+                              : "guest"}
                           </p>
                         </div>
                       </td>

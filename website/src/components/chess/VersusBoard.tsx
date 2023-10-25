@@ -14,12 +14,13 @@ import {
   ScreenSizeBoardMap,
   useSidebar,
 } from "../../providers/SidebarProvider";
-import { CustomBoard } from "./Board";
+import { Board } from "./Board";
 import { BoardControl } from "./BoardControl";
 import { Tooltip } from "../display/Tooltip";
 import { Hint1Icon } from "../icons/Hint1Icon";
 import { Hint2Icon } from "../icons/Hint2Icon";
 import { StatusIcon } from "../icons/StatusIcon";
+import { deepEquals } from "../../utils/helpers";
 
 const BOT = "bot";
 const ENGINE = "engine";
@@ -32,9 +33,9 @@ export const VersusBoard = () => {
     playContinuation,
     setPosition,
     undo,
-    swapOrientation,
-    reset,
+    arrows,
     addArrows,
+    highlightedSquares,
     addHighlightedSquares,
     resetHighlightedMoves,
     orientation,
@@ -57,7 +58,6 @@ export const VersusBoard = () => {
 
   const [skillLvl, setSkillLvl] = useState<SkillLevel>(SkillLevel.Intermediate);
   const [continuation, setContinuation] = useState("");
-  const [boardSize, setBoardSize] = useState(512);
   const [iconSize, setIconSize] = useState(1.3);
 
   const [botMove, setBotMove] = useState<string | null>(null);
@@ -71,6 +71,7 @@ export const VersusBoard = () => {
     addArrows([], true);
     setSuggestedMoves(null);
     resetHighlightedMoves([]);
+    setHintLvl(0);
   }, [resetHighlightedMoves, addArrows, addHighlightedSquares]);
 
   const addContinuation = useCallback(() => {
@@ -176,7 +177,6 @@ export const VersusBoard = () => {
   }, []);
 
   useEffect(() => {
-    setBoardSize(ScreenSizeBoardMap[screenSize ?? ScreenSize.Mobile]);
     setIconSize(screenSize === ScreenSize.Mobile ? 1 : 1.3);
   }, [screenSize]);
 
@@ -221,25 +221,34 @@ export const VersusBoard = () => {
         const fromSqrs = sqrPairs.map((pair) => {
           return pair[0];
         });
-        addHighlightedSquares(fromSqrs, false);
+
+        if (!deepEquals(highlightedSquares, fromSqrs)) {
+          addHighlightedSquares(fromSqrs, true);
+        }
         break;
       }
       case 2: {
-        addHighlightedSquares([], true);
-        addArrows(sqrPairs, false);
+        // addHighlightedSquares([], true);
+        if (!deepEquals(sqrPairs, arrows)) {
+          addArrows(sqrPairs, true);
+        }
         break;
       }
       default: {
         if (hintLvl > 2) {
-          addHighlightedSquares([], true);
-          addArrows(sqrPairs, false);
+          // addHighlightedSquares([], true);
+          if (!deepEquals(sqrPairs, arrows)) {
+            addArrows(sqrPairs, true);
+          }
         }
       }
     }
   }, [
     hintLvl,
-    getMoveSuggestions,
     suggestedMoves,
+    highlightedSquares,
+    arrows,
+    getMoveSuggestions,
     addHighlightedSquares,
     addArrows,
   ]);
@@ -332,7 +341,7 @@ export const VersusBoard = () => {
           </form>
         </div>
         <div className="mx-auto">
-          <CustomBoard clearCache={clearCache} />
+          <Board clearCache={clearCache} />
         </div>
         <BoardControl clearCache={clearCache}>
           <Tooltip content={"Status"}>
@@ -363,6 +372,8 @@ export const VersusBoard = () => {
               onClick={() => {
                 try {
                   setHintLvl(hintLvl + 1);
+                  console.log("hey");
+                  addHighlightedSquares([], true);
                 } catch (err) {
                   addNotification({
                     type: "error",

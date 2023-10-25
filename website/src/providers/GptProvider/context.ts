@@ -1,10 +1,24 @@
 import { ChatRequestOptions, Message } from "ai";
-import { ChangeEvent, createContext, FormEvent, useContext } from "react";
+import {
+  ChangeEvent,
+  createContext,
+  Dispatch,
+  FormEvent,
+  SetStateAction,
+  useContext,
+} from "react";
+
+export interface Suggestion {
+  title: string;
+  prompt: string;
+}
 
 export interface GptProviderContext {
   input: string;
   messages: Message[];
   engineOn: boolean;
+  suggestions: Suggestion[];
+  setInput: Dispatch<SetStateAction<string>>;
   updateMessages: (msgs: Message[], reset?: boolean) => void;
   appendMessages: (msgs: Message[]) => void;
   submit: (
@@ -15,12 +29,17 @@ export interface GptProviderContext {
     e: ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement>,
   ) => void;
   setBody: (body: { [key: string]: any }) => void;
+  getInitialSuggestions: () => void;
 }
 
 export const GptContext = createContext<GptProviderContext>({
   input: "",
   messages: [],
   engineOn: false,
+  suggestions: [],
+  setInput: (_prompt) => {
+    throw new Error("GptProvider not initialized");
+  },
   updateMessages: (_msgs, _reset) => {
     throw new Error("GptProvider not initialized");
   },
@@ -34,6 +53,9 @@ export const GptContext = createContext<GptProviderContext>({
     throw new Error("GptProvider not initialized");
   },
   setBody: (_body) => {
+    throw new Error("GptProvider not initialized");
+  },
+  getInitialSuggestions: () => {
     throw new Error("GptProvider not initialized");
   },
 });

@@ -10,6 +10,7 @@ export enum ActionType {
   Default,
   ChooseOpening,
   ChooseOption,
+  ReviewOptions,
 }
 
 interface Props {
@@ -26,17 +27,24 @@ const openings = [
   "Ruy Lopez",
 ];
 
-enum Options {
+enum OpeningOptions {
   Engine = "Engine Analysis",
   Position = "Positional Ideas",
   BestMoves = "Best Moves",
+}
+
+enum ReviewOptions {
+  Mistakes = "Mistakes",
+  Opening = "Opening",
+  Tactics = "Missed Tactics",
+  // Takeaways = "Key Takeaways",
 }
 
 export const ChatAction = ({ type, defaultDisplay }: Props) => {
   const { messages, engineOn, updateMessages, appendMessages } = useGpt();
   const [dynamicDisplay, setDynamicDisplay] = useState(false);
 
-  const OptionsMap: { [key in Options]: string } = useMemo(
+  const OptionsMap: { [key in OpeningOptions]: string } = useMemo(
     () => ({
       "Engine Analysis": `Turn ${engineOn ? "off" : "on"} the engine`,
       "Positional Ideas": "What are the main ideas in the position?",
@@ -45,72 +53,88 @@ export const ChatAction = ({ type, defaultDisplay }: Props) => {
     [engineOn],
   );
 
+  // const ReviewOptionMap: { [key in ReviewOptions]: string } = useMemo(
+  //   () => ({
+  //     "Mistakes": ``,
+  //     "Opening": "What are the main ideas in the position?",
+  //     "Missed Tactics": "What are 3 good moves in the position and why?",
+  //   }),
+  //   [],
+  // );
+
   const renderAction = useCallback(() => {
     switch (type) {
       case ActionType.Default: {
         return (
-          <div>
-            <Action
-              onClick={() => {
-                updateMessages(
-                  [
-                    {
-                      id: nanoid(),
-                      role: "assistant",
-                      content: "Which opening would you like to study?",
-                    },
-                  ],
-                  true,
-                );
-              }}
-            >
-              Choose an Opening
-            </Action>
-          </div>
+          // <div>
+          <Action
+            onClick={() => {
+              updateMessages(
+                [
+                  {
+                    id: nanoid(),
+                    role: "assistant",
+                    content: "Which opening would you like to study?",
+                  },
+                ],
+                true,
+              );
+            }}
+          >
+            Choose an Opening
+          </Action>
+          // </div>
         );
       }
       case ActionType.ChooseOpening: {
         return (
-          <div className="flex space-x-2">
-            {openings.map((name) => (
-              <Action
-                key={name}
-                onClick={() => {
-                  appendMessages([
-                    { id: nanoid(), role: "user", content: name.toLowerCase() },
-                    {
-                      id: nanoid(),
-                      role: "assistant",
-                      content: "Ok, setting board state.",
-                    },
-                  ]);
-                  setDynamicDisplay(false);
-                }}
-              >
-                {name}
-              </Action>
-            ))}
-          </div>
+          // <div className="flex space-x-2">
+          openings.map((name) => (
+            <Action
+              key={name}
+              onClick={() => {
+                appendMessages([
+                  { id: nanoid(), role: "user", content: name.toLowerCase() },
+                  {
+                    id: nanoid(),
+                    role: "assistant",
+                    content: "Ok, setting board state.",
+                  },
+                ]);
+                setDynamicDisplay(false);
+              }}
+            >
+              {name}
+            </Action>
+          ))
+          // </div>
         );
       }
       case ActionType.ChooseOption: {
         return (
-          <div className="flex space-x-2">
-            {Object.values(Options).map((option) => (
-              <Action
-                key={option}
-                onClick={() => {
-                  appendMessages([
-                    { id: nanoid(), role: "user", content: OptionsMap[option] },
-                  ]);
-                  setDynamicDisplay(false);
-                }}
-              >
-                {option}
-              </Action>
-            ))}
-          </div>
+          // <div className="flex space-x-2">
+          Object.values(OpeningOptions).map((option) => (
+            <Action
+              key={option}
+              onClick={() => {
+                appendMessages([
+                  { id: nanoid(), role: "user", content: OptionsMap[option] },
+                ]);
+                setDynamicDisplay(false);
+              }}
+            >
+              {option}
+            </Action>
+          ))
+          // </div>
         );
+      }
+      case ActionType.ReviewOptions: {
+        return Object.values(ReviewOptions).map((option) => (
+          <Action key={option} onClick={() => {}}>
+            {option}
+          </Action>
+        ));
       }
     }
   }, [type, updateMessages, appendMessages, OptionsMap]);
@@ -152,7 +176,7 @@ export const ChatAction = ({ type, defaultDisplay }: Props) => {
       }`}
     >
       <div className="overflow-x-auto pt-2 pb-1 pl-1 pr-1 custom-scrollbar ">
-        {renderAction()}
+        <div className="flex space-x-2">{renderAction()}</div>
       </div>
     </div>
   );
