@@ -117,7 +117,7 @@ ${messages.slice(-3).map((msg: any) => `${msg.role}: ${msg.content}\n`)}
   // Request the OpenAI API for the response based on the prompt
   // @ts-ignore
   const response = await openai.chat.completions.create({
-    model: "gpt-3.5-turbo",
+    model: "gpt-4-1106-preview",
     stream: true,
     messages: [systemMessage, userMsg],
     temperature: 0,

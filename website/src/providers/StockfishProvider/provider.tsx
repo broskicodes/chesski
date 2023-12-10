@@ -10,6 +10,7 @@ import {
 } from "./context";
 import { PropsWithChildren, useCallback, useMemo, useState } from "react";
 import { Player, useChessboard } from "../ChessboardProvider";
+import { Move } from "chess.js";
 
 const MAX_DEPTH = 12;
 
@@ -291,6 +292,45 @@ export const StockfishProvider = ({ children }: PropsWithChildren) => {
     [engines, restartEngine],
   );
 
+  const evaluateGame = useCallback(async (engineName: string, moves: Move[]) => {
+    const engine = engines[engineName];
+
+    if (!engine) {
+      return [];
+    }
+    // const worker = new Worker("/nmrugg_stockfish_js/stockfish.js");
+    // worker.postMessage("uci");
+    // worker.postMessage("ucinewgame");
+
+    const evals: any[] = [];
+let i = 1;
+    for (const move of moves) {
+      // Send the FEN to the worker and wait for the evaluation
+      const evaluation = await new Promise<number>((resolve) => {
+
+          // console.log(move.after)
+          engine.worker.postMessage(`position fen ${move.after}`);
+          engine.worker.postMessage("eval");
+
+          // resolve(0)
+          engine.worker.onmessage = (e) => {
+              if (e.data.startsWith('Final evaluation')) {
+                  console.log(i++, parseFloat(e.data.split(/\s+/).at(2)));
+                  resolve(parseFloat(e.data.split(/\s+/).at(2)));
+              }
+          };
+      });
+
+      // console.log("hey")
+
+      evals.push(evaluation);
+      // break;
+  }
+
+  return evals;
+
+  }, [])
+
   const getGameStatus = useCallback(
     (engineName: string): [Player, GameStatus] => {
       const engine = engines[engineName];
@@ -325,6 +365,7 @@ export const StockfishProvider = ({ children }: PropsWithChildren) => {
       stopSearch,
       restartEngine,
       setEngineSkillLvl,
+      evaluateGame,
       getGameStatus,
       getMoveSuggestions,
     }),
@@ -335,6 +376,7 @@ export const StockfishProvider = ({ children }: PropsWithChildren) => {
       stopSearch,
       restartEngine,
       setEngineSkillLvl,
+      evaluateGame,
       getGameStatus,
       getMoveSuggestions,
     ],

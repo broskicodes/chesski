@@ -9,7 +9,7 @@ import {
 import { useNotifications } from "../NotificationProvider";
 import { SesionContext, SessionProviderContext } from "./context";
 import { path } from "@oddjs/odd";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export const SessionProvider = ({ children }: PropsWithChildren) => {
   const { newAlert, addNotification } = useNotifications();
@@ -134,7 +134,7 @@ export const SessionProvider = ({ children }: PropsWithChildren) => {
       consumer.on("link", async ({ approved, username }) => {
         if (approved) {
           setSession(await program.auth.session());
-          router.push(`/?authed=${username}`, "/");
+          router.push(`/?authed=${username}`);
         } else {
           addNotification({
             msg: "Link was refused by authenticated device ",

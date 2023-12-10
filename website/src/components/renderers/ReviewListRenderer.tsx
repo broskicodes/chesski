@@ -62,8 +62,14 @@ export const ReviewListRenderer = () => {
     setLoading(true);
 
     try {
+      let until = Date.now();
+      const period = 7 * 24 * 60 * 60 * 1000;
+
+      
+      console.log(until, period);
+
       const res = await fetch(
-        `https://lichess.org/api/games/user/${lichessName}?moves=false&tags=false&pgnInJson=true`,
+        `https://lichess.org/api/games/user/${lichessName}?moves=false&tags=false&pgnInJson=true&since=${until - period}&until=${until}`,
         {
           method: "GET",
           headers: {
@@ -80,7 +86,7 @@ export const ReviewListRenderer = () => {
         .map((g) => {
           const game = JSON.parse(g);
 
-          console.log(game.players);
+          // console.log(game.players);
 
           return {
             id: game.id,

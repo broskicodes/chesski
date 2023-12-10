@@ -4,7 +4,9 @@ class MyDocument extends Document {
   render() {
     return (
       <Html lang="en">
-        <Head />
+        <Head>
+          <link rel="icon" href="/chesski-logo.svg" />
+        </Head>
         <body>
           <Main />
           <NextScript />

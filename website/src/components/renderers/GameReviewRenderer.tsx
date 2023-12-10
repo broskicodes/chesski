@@ -1,3 +1,4 @@
+import { Chess } from "chess.js";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import { ChessboardProvider, Player } from "../../providers/ChessboardProvider";
@@ -6,6 +7,7 @@ import { GptProvider } from "../../providers/GptProvider";
 import { useSession } from "../../providers/OddSessionProvider";
 import { PgnProvider } from "../../providers/PgnProvider";
 import { useSidebar } from "../../providers/SidebarProvider";
+import { SkillLevel, StockfishProvider, useStockfish } from "../../providers/StockfishProvider";
 import { ReviewChat } from "../ai/ReviewChat";
 import { ReviewBoard } from "../chess/ReviewBoard";
 
@@ -13,9 +15,12 @@ interface Props {
   gameId: string;
 }
 
+const ENGINE = "engine";
+
 export const GameReviewRenderer = ({ gameId }: Props) => {
   const { isConnected } = useSession();
   const { expanded } = useSidebar();
+  const { evaluateGame, initEngine, isInit } = useStockfish();
   const [pgn, setPgn] = useState("");
   // const [orientation, setOrientation] = useState<Player>(Player.Black)
 
@@ -29,8 +34,23 @@ export const GameReviewRenderer = ({ gameId }: Props) => {
 
     const pgn = await res.text();
 
+    const game = new Chess();
+    game.loadPgn(pgn);
+    evaluateGame(ENGINE, game.history({ verbose: true }))
+    // console.log(game.history())
+
     return pgn;
-  }, [gameId]);
+  }, [gameId, evaluateGame]);
+
+  useEffect(() => {
+    if (!isInit(ENGINE)) {
+      initEngine({
+        engineName: ENGINE,
+        skillLvl: SkillLevel.Master,
+        numPVs: 1
+      });
+    }
+  }, [initEngine, initEngine]);
 
   useEffect(() => {
     fetchGame().then((pgn) => {
@@ -65,17 +85,19 @@ export const GameReviewRenderer = ({ gameId }: Props) => {
             <PgnProvider>
               <ChessboardProvider>
                 <GptProvider apiEndpoint="/api/gpt/review">
-                  <div
-                    className={`flex flex-col pt-14 sm:pt-8  w-full space-y-8 justify-center items-center ${
-                      expanded ? "md:ml-72" : "md:ml-20"
-                    }`}
-                  >
-                    <ReviewBoard
-                      pgn={pgn}
-                      // orientation={orientation}
-                    />
-                    <ReviewChat pgn={pgn} />
-                  </div>
+                  {/* <StockfishProvider> */}
+                    <div
+                      className={`flex flex-col pt-14 sm:pt-8  w-full space-y-8 justify-center items-center ${
+                        expanded ? "md:ml-72" : "md:ml-20"
+                      }`}
+                    >
+                      <ReviewBoard
+                        pgn={pgn}
+                        // orientation={orientation}
+                      />
+                      <ReviewChat pgn={pgn} />
+                    </div>
+                  {/* </StockfishProvider> */}
                 </GptProvider>
               </ChessboardProvider>
             </PgnProvider>

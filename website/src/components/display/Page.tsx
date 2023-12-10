@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { BottomNav } from "./BottonNav";
 import { SidebarProvider } from "../../providers/SidebarProvider";
 import { BuyMeACoffee } from "./BuyMeACoffee";
+import { StockfishProvider } from "../../providers/StockfishProvider";
 
 export const Page = ({ children }: PropsWithChildren) => {
   return (
@@ -18,8 +19,10 @@ export const Page = ({ children }: PropsWithChildren) => {
         <SessionProvider>
           <Notifications />
           <SidebarProvider>
+            <StockfishProvider>
             <Sidebar />
             {children}
+            </StockfishProvider>
             {/* <BuyMeACoffee /> */}
           </SidebarProvider>
         </SessionProvider>

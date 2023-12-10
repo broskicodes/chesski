@@ -1,3 +1,4 @@
+import { Move } from "chess.js";
 import { createContext, useContext } from "react";
 import { Player } from "../ChessboardProvider";
 
@@ -58,6 +59,7 @@ export interface StockfishProviderContext {
   stopSearch: (engineName: string) => boolean;
   restartEngine: (engineName: string) => boolean;
   setEngineSkillLvl: (engineName: string, lvl: SkillLevel) => boolean;
+  evaluateGame: (engineName: string, moves: Move[]) => Promise<any[]>;
   getGameStatus: (engineName: string) => [Player, GameStatus];
   getMoveSuggestions: (engineName: string) => PV[];
 }
@@ -79,6 +81,9 @@ export const StockfishContext = createContext<StockfishProviderContext>({
     throw new Error("StockfishProvider not initialized");
   },
   setEngineSkillLvl: (_eName, _lvl) => {
+    throw new Error("StockfishProvider not initialized");
+  },
+  evaluateGame: (_eNmae, _moves) => {
     throw new Error("StockfishProvider not initialized");
   },
   getGameStatus: (_eName) => {

@@ -1,5 +1,5 @@
 import { PropsWithChildren, ReactNode, useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { useRouter, usePathname } from "next/navigation";
 import { useSession } from "../../providers/OddSessionProvider";
 import { DisconnectIcon } from "../icons/DisconnectIcon";
 import { DeviceLinkIcon } from "../icons/DeivceLinkIcons";
@@ -10,11 +10,13 @@ import { useSidebar } from "../../providers/SidebarProvider";
 import Link from "next/link";
 import { TwitterIcon } from "../icons/TwitterIcon";
 import { PreorderIcon } from "../icons/PreorderIcon";
+import Image from "next/image"
 
 export const Sidebar = ({ children }: PropsWithChildren) => {
   const { isConnected, username, disconnect } = useSession();
   const { expanded, screenWidth, toggleExpanded } = useSidebar();
   const router = useRouter();
+  const pathname = usePathname()
 
   return (
     <aside
@@ -54,7 +56,7 @@ export const Sidebar = ({ children }: PropsWithChildren) => {
             {screenWidth > 640 && !expanded && (
               <div className="flex items-center w-full">
                 <p className="text-center text-3xl font-bold w-full">
-                  <Link href={"/"}>C</Link>
+                  <Link href={"/"}><Image src={"/chesski-logo.svg"}  alt="C" width={42} height={42} />  </Link>
                 </p>
               </div>
             )}
@@ -63,17 +65,17 @@ export const Sidebar = ({ children }: PropsWithChildren) => {
             <SidebarItem
               icon={PlayChessIcon({ height: 1.5 })}
               text={"Play Chesski"}
-              active={router.route === "/play"}
+              active={pathname === "/play"}
               handleClick={() => {
-                router.route === "/play" ? {} : router.push("/play");
+                pathname === "/play" ? {} : router.push("/play");
               }}
             />
             <SidebarItem
               icon={OpenningsIcon({ height: 1.5 })}
               text={"Review Games"}
-              active={router.route.includes("review")}
+              active={pathname?.includes("review")}
               handleClick={() => {
-                router.route === "/review" ? {} : router.push("/review");
+                pathname === "/review" ? {} : router.push("/review");
               }}
             />
             {children}

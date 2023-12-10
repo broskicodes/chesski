@@ -10,6 +10,7 @@ export interface SessionProviderContext {
   // chessComUsername: string | null;
   fs: FileSystem | null;
   loading: boolean;
+  assistantId: string | null;
   isConnected: () => boolean;
   connect: (username: string) => Promise<boolean>;
   disconnect: () => void;
@@ -22,6 +23,7 @@ export const SesionContext = createContext<SessionProviderContext>({
   // chessComUsername: null,
   fs: null,
   loading: false,
+  assistantId: null,
   isConnected: () => {
     throw new Error("SessionProvider not initialized");
   },
